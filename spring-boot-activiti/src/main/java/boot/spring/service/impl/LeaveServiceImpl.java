@@ -69,7 +69,7 @@ public class LeaveServiceImpl implements LeaveService {
     public List<LeaveApply> getpagedepttask(String username, int firstrow, int rowcount) {
         List<LeaveApply> results = new ArrayList<LeaveApply>();
         // 使用任务候选人查询待办列表
-        List<Task> tasks = taskservice.createTaskQuery().taskAssignee(username).taskName("部门领导审批").listPage(firstrow, rowcount);
+        List<Task> tasks = taskservice.createTaskQuery().taskAssignee(username).taskName("部门领导审批").orderByTaskCreateTime().desc().listPage(firstrow, rowcount);
         for (Task task : tasks) {
             String instanceid = task.getProcessInstanceId();
             ProcessInstance ins = runtimeservice.createProcessInstanceQuery().processInstanceId(instanceid).singleResult();
@@ -94,7 +94,7 @@ public class LeaveServiceImpl implements LeaveService {
 
     public List<LeaveApply> getpagehrtask(String username, int firstrow, int rowcount) {
         List<LeaveApply> results = new ArrayList<LeaveApply>();
-        List<Task> tasks = taskservice.createTaskQuery().taskAssignee(username).taskName("人事审批").listPage(firstrow, rowcount);
+        List<Task> tasks = taskservice.createTaskQuery().taskAssignee(username).taskName("人事审批").orderByTaskCreateTime().desc().listPage(firstrow, rowcount);
         for (Task task : tasks) {
             String instanceid = task.getProcessInstanceId();
             ProcessInstance ins = runtimeservice.createProcessInstanceQuery().processInstanceId(instanceid).singleResult();
@@ -114,7 +114,7 @@ public class LeaveServiceImpl implements LeaveService {
 
     public List<LeaveApply> getpageXJtask(String userid, int firstrow, int rowcount) {
         List<LeaveApply> results = new ArrayList<LeaveApply>();
-        List<Task> tasks = taskservice.createTaskQuery().taskCandidateOrAssigned(userid).taskName("销假").listPage(firstrow, rowcount);
+        List<Task> tasks = taskservice.createTaskQuery().taskCandidateOrAssigned(userid).taskName("销假").orderByTaskCreateTime().desc().listPage(firstrow, rowcount);
         for (Task task : tasks) {
             String instanceid = task.getProcessInstanceId();
             ProcessInstance ins = runtimeservice.createProcessInstanceQuery().processInstanceId(instanceid).singleResult();
@@ -133,7 +133,7 @@ public class LeaveServiceImpl implements LeaveService {
 
     public List<LeaveApply> getpageupdateapplytask(String userid, int firstrow, int rowcount) {
         List<LeaveApply> results = new ArrayList<LeaveApply>();
-        List<Task> tasks = taskservice.createTaskQuery().taskCandidateOrAssigned(userid).taskName("调整申请").listPage(firstrow, rowcount);
+        List<Task> tasks = taskservice.createTaskQuery().taskCandidateOrAssigned(userid).taskName("调整申请").orderByTaskCreateTime().desc().listPage(firstrow, rowcount);
         for (Task task : tasks) {
             String instanceid = task.getProcessInstanceId();
             ProcessInstance ins = runtimeservice.createProcessInstanceQuery().processInstanceId(instanceid).singleResult();
