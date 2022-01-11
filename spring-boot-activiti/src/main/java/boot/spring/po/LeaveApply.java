@@ -49,7 +49,17 @@ public class LeaveApply implements Serializable{
 	String activityid;
 	
 	String state;
-	
+
+	Integer days;
+
+	public Integer getDays() {
+		return days;
+	}
+
+	public void setDays(Integer days) {
+		this.days = days;
+	}
+
 	public int getId() {
 		return id;
 	}

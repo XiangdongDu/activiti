@@ -53,16 +53,16 @@ CREATE TABLE `permission`  (
 -- ----------------------------
 -- Records of permission
 -- ----------------------------
-INSERT INTO `permission` VALUES (2, '人事审批');
-INSERT INTO `permission` VALUES (9, '出纳付款');
-INSERT INTO `permission` VALUES (8, '总经理审批');
-INSERT INTO `permission` VALUES (22, '收货确认');
-INSERT INTO `permission` VALUES (17, '调整申请');
-INSERT INTO `permission` VALUES (21, '调整采购申请');
-INSERT INTO `permission` VALUES (3, '财务审批');
-INSERT INTO `permission` VALUES (1, '部门领导审批');
-INSERT INTO `permission` VALUES (18, '采购经理审批');
-INSERT INTO `permission` VALUES (16, '销假');
+# INSERT INTO `permission` VALUES (2, '人事审批');
+# INSERT INTO `permission` VALUES (9, '出纳付款');
+# INSERT INTO `permission` VALUES (8, '总经理审批');
+# INSERT INTO `permission` VALUES (22, '收货确认');
+# INSERT INTO `permission` VALUES (17, '调整申请');
+# INSERT INTO `permission` VALUES (21, '调整采购申请');
+# INSERT INTO `permission` VALUES (3, '财务审批');
+# INSERT INTO `permission` VALUES (1, '部门领导审批');
+# INSERT INTO `permission` VALUES (18, '采购经理审批');
+# INSERT INTO `permission` VALUES (16, '销假');
 
 -- ----------------------------
 -- Table structure for purchase
@@ -96,8 +96,8 @@ CREATE TABLE `role`  (
 -- ----------------------------
 -- Records of role
 -- ----------------------------
-INSERT INTO `role` VALUES (18, '普通用户');
-INSERT INTO `role` VALUES (17, '管理员');
+# INSERT INTO `role` VALUES (18, '普通用户');
+# INSERT INTO `role` VALUES (17, '管理员');
 
 -- ----------------------------
 -- Table structure for role_permission
@@ -115,21 +115,21 @@ CREATE TABLE `role_permission`  (
 -- ----------------------------
 -- Records of role_permission
 -- ----------------------------
-INSERT INTO `role_permission` VALUES (49, 17, 2);
-INSERT INTO `role_permission` VALUES (50, 17, 9);
-INSERT INTO `role_permission` VALUES (51, 17, 8);
-INSERT INTO `role_permission` VALUES (52, 17, 22);
-INSERT INTO `role_permission` VALUES (53, 17, 17);
-INSERT INTO `role_permission` VALUES (54, 17, 21);
-INSERT INTO `role_permission` VALUES (55, 17, 3);
-INSERT INTO `role_permission` VALUES (56, 17, 1);
-INSERT INTO `role_permission` VALUES (57, 17, 18);
-INSERT INTO `role_permission` VALUES (58, 17, 16);
-INSERT INTO `role_permission` VALUES (64, 18, 9);
-INSERT INTO `role_permission` VALUES (65, 18, 22);
-INSERT INTO `role_permission` VALUES (66, 18, 17);
-INSERT INTO `role_permission` VALUES (67, 18, 21);
-INSERT INTO `role_permission` VALUES (68, 18, 16);
+# INSERT INTO `role_permission` VALUES (49, 17, 2);
+# INSERT INTO `role_permission` VALUES (50, 17, 9);
+# INSERT INTO `role_permission` VALUES (51, 17, 8);
+# INSERT INTO `role_permission` VALUES (52, 17, 22);
+# INSERT INTO `role_permission` VALUES (53, 17, 17);
+# INSERT INTO `role_permission` VALUES (54, 17, 21);
+# INSERT INTO `role_permission` VALUES (55, 17, 3);
+# INSERT INTO `role_permission` VALUES (56, 17, 1);
+# INSERT INTO `role_permission` VALUES (57, 17, 18);
+# INSERT INTO `role_permission` VALUES (58, 17, 16);
+# INSERT INTO `role_permission` VALUES (64, 18, 9);
+# INSERT INTO `role_permission` VALUES (65, 18, 22);
+# INSERT INTO `role_permission` VALUES (66, 18, 17);
+# INSERT INTO `role_permission` VALUES (67, 18, 21);
+# INSERT INTO `role_permission` VALUES (68, 18, 16);
 
 -- ----------------------------
 -- Table structure for user
@@ -148,10 +148,10 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (31, 'xiaomi', '1234', '110', 20);
-INSERT INTO `user` VALUES (33, 'jon', '1234', '123', 23);
-INSERT INTO `user` VALUES (34, 'xiaocai', '1234', '111', 32);
-INSERT INTO `user` VALUES (35, 'WANG', '1234', '222', 33);
+# INSERT INTO `user` VALUES (31, 'xiaomi', '1234', '110', 20);
+# INSERT INTO `user` VALUES (33, 'jon', '1234', '123', 23);
+# INSERT INTO `user` VALUES (34, 'xiaocai', '1234', '111', 32);
+# INSERT INTO `user` VALUES (35, 'WANG', '1234', '222', 33);
 
 -- ----------------------------
 -- Table structure for user_role
@@ -167,9 +167,37 @@ CREATE TABLE `user_role`  (
 -- ----------------------------
 -- Records of user_role
 -- ----------------------------
-INSERT INTO `user_role` VALUES (93, 31, 17);
-INSERT INTO `user_role` VALUES (94, 33, 18);
-INSERT INTO `user_role` VALUES (96, 35, 18);
-INSERT INTO `user_role` VALUES (97, 34, 17);
+# INSERT INTO `user_role` VALUES (93, 31, 17);
+# INSERT INTO `user_role` VALUES (94, 33, 18);
+# INSERT INTO `user_role` VALUES (96, 35, 18);
+# INSERT INTO `user_role` VALUES (97, 34, 17);
+#
+# SET FOREIGN_KEY_CHECKS = 1;
 
-SET FOREIGN_KEY_CHECKS = 1;
+
+
+-- ----------------------------
+-- init data
+-- ----------------------------
+
+INSERT INTO myActiviti.user (username, password, tel, age) VALUES ('xiaomi', '1234', '110', 20);
+INSERT INTO myActiviti.user (username, password, tel, age) VALUES ('jon', '1234', '111', 23);
+INSERT INTO myActiviti.user (username, password, tel, age) VALUES ('duxiangdong', '1234', '188', 28);
+INSERT INTO myActiviti.user (username, password, tel, age) VALUES ('zhangsan', '1234', '112', 22);
+INSERT INTO myActiviti.user (username, password, tel, age) VALUES ('lisi', '1234', '113', 33);
+INSERT INTO myActiviti.user (username, password, tel, age) VALUES ('wangwu', '1234', '114', 44);
+
+
+INSERT INTO myActiviti.role (rolename) VALUES ('人事经理');
+INSERT INTO myActiviti.role (rolename) VALUES ('总经理');
+INSERT INTO myActiviti.role (rolename) VALUES ('普通用户');
+INSERT INTO myActiviti.role (rolename) VALUES ('管理员');
+INSERT INTO myActiviti.role (rolename) VALUES ('部门经理');
+
+
+INSERT INTO myActiviti.permission (permissionname) VALUES ('人事审批');
+INSERT INTO myActiviti.permission (permissionname) VALUES ('总经理审批');
+INSERT INTO myActiviti.permission (permissionname) VALUES ('调整申请');
+INSERT INTO myActiviti.permission (permissionname) VALUES ('部门领导审批');
+INSERT INTO myActiviti.permission (permissionname) VALUES ('销假');
+

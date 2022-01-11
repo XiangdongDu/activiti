@@ -29,7 +29,7 @@ public class Swagger2 {
 		return new ApiInfoBuilder()
 				.title("springboot利用swagger构建api文档")
 				.description("springboot整合activiti工作流引擎")
-				.termsOfServiceUrl("https://gitee.com/shenzhanwang/projects")
+				.termsOfServiceUrl("https://github.com/XiangdongDu/activiti")
 				.version("1.0")
 				.build();
 	}

@@ -30,7 +30,7 @@
                 <div class="box-content">
                     <form role="form" action="startleave" method="post">
                         <div class="form-group">
-                            <label>请假类型</label>
+                            <label>请假类型 <label style="color: red">* </label> </label>
                             <select name="leave_type" class="form-control">
                                 <option value="事假">事假</option>
                                 <option value="病假">病假</option>
@@ -40,21 +40,23 @@
                             </select>
                         </div>
                         <div class="form-group has-feedback">
-                            <label class="control-label">开始时间</label>
+                            <label class="control-label">开始时间 <label style="color: red">* </label>
+                            </label>
                             <input id="start" class="form-control" name="start_time" placeholder="开始时间"/><span
                                 class="fa fa-calendar txt-danger form-control-feedback"></span>
                         </div>
                         <div class="form-group has-feedback">
-                            <label>结束时间</label> <input id="end" class="form-control" name="end_time"
-                                                       placeholder="结束时间"/><span
+                            <label>结束时间 <label style="color: red">* </label>
+                            </label> <input id="end" class="form-control" name="end_time"
+                                            placeholder="结束时间"/><span
                                 class="fa fa-calendar txt-danger form-control-feedback"></span>
                         </div>
                         <div class="form-group">
-                            <label>请假原因</label>
-                            <textarea class="form-control" name="reason" rows="3"></textarea>
+                            <label>请假原因 <label style="color: red">* </label></label>
+                            <textarea id="reason" class="form-control" name="reason" rows="3"></textarea>
                         </div>
                         <div class="form-group">
-                            <label>请选择部门经理进行审批</label>
+                            <label>请选择部门经理进行审批 <label style="color: red">* </label></label>
                             <select id="leader" name="deptleader" class="form-control">
                             </select>
                         </div>
@@ -71,6 +73,23 @@
 <script type="text/javascript">
     $(document).ready(function () {
         $("#btn").click(function () {
+            //校验是否必填
+            var start = document.getElementById("start").value;
+            if (start == "") {
+                alert("开始时间不能为空！");
+                return;
+            }
+            var end = document.getElementById("end").value;
+            if (end == "") {
+                alert("结束时间不能为空！");
+                return;
+            }
+            var reason = document.getElementById("reason").value.trim();
+            if (reason == "") {
+                alert("请假原因不能为空！");
+                return;
+            }
+
             $.post("startleave", $("form").serialize(), function () {
                 alert("申请成功");
                 LoadAjaxContent("leaveapply");

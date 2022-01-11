@@ -98,7 +98,7 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div id="isDisplay" style=”display:none”>
                             <label>请选择hr进行审批</label>
                             <select id="hr" name="hr" class="form-control">
                             </select>
@@ -115,11 +115,6 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-//	$.get("/listUsers",function(data){
-//		for (i=0;i<data.length;i++) {
-//			$("#hr").append("<option value='"+ data[i].username +"'>" + data[i].username + "</option>");
-//		}
-//	});
 
         //获取人事经理用户
         $.get("/listManagerUsers/人事经理", function (data) {
@@ -127,7 +122,6 @@
                 $("#hr").append("<option value='" + data[i].username + "'>" + data[i].username + "</option>");
             }
         });
-
 
         $("#btn").click(function () {
             $.post("task/deptcomplete/" + $("form").data("taskid"), $("form").serialize(), function (a) {
