@@ -216,6 +216,11 @@ $(document).ready(function(){
 		if (data.indexOf("人事审批") >= 0) {
 			$("#leave").append('<li><a class="ajax-link" href="hraudit">人事审批</a></li>');
 		}
+
+		if (data.indexOf("总经理审批") >= 0) {
+			$("#leave").append('<li><a class="ajax-link" href="presidentaudit">总经理审批</a></li>');
+		}
+
 		if (data.indexOf("销假") >= 0) {
 			$("#leave").append('<li><a class="ajax-link" href="reportback">销假</a></li>');
 		}

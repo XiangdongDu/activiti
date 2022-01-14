@@ -164,6 +164,14 @@ public class ActivitiController {
         return "activiti/hraudit";
     }
 
+
+    //dxd 总经理审批页面
+    @RequestMapping(value = "/presidentaudit", method = RequestMethod.GET)
+    public String president() {
+        System.out.println("========================>总经理审批页面...");
+        return "activiti/presidentaudit";
+    }
+
     @RequestMapping(value = "/index", method = RequestMethod.GET)
     public String my() {
         return "index";
@@ -196,19 +204,14 @@ public class ActivitiController {
         return new MSG("sucess");
     }
 
-    @ApiOperation("获取部门领导审批待办列表")
-    @RequestMapping(value = "/depttasklist", method = RequestMethod.POST)
-    @ResponseBody
-    public DataGrid<LeaveTask> getdepttasklist(HttpSession session, @RequestParam("current") int current,
-                                               @RequestParam("rowCount") int rowCount) {
-        String username = (String) session.getAttribute("username");
-        DataGrid<LeaveTask> grid = new DataGrid<LeaveTask>();
-        grid.setRowCount(rowCount);
-        grid.setCurrent(current);
-        int firstrow = (current - 1) * rowCount;
-        List<LeaveApply> results = leaveservice.getpagedepttask(username, firstrow, rowCount);
-        int totalsize = leaveservice.getalldepttask(username);
-        List<LeaveTask> tasks = new ArrayList<LeaveTask>();
+    /**
+     * 获取封装公共信息
+     *
+     * @param results
+     * @return
+     */
+    private List<LeaveTask> getLeaveTasks(List<LeaveApply> results) {
+        List<LeaveTask> tasks = new ArrayList<>();
         for (LeaveApply apply : results) {
             LeaveTask task = new LeaveTask();
             task.setApply_time(apply.getApply_time());
@@ -225,6 +228,23 @@ public class ActivitiController {
             task.setTaskname(apply.getTask().getName());
             tasks.add(task);
         }
+        return tasks;
+    }
+
+
+    @ApiOperation("获取部门领导审批待办列表")
+    @RequestMapping(value = "/depttasklist", method = RequestMethod.POST)
+    @ResponseBody
+    public DataGrid<LeaveTask> getdepttasklist(HttpSession session, @RequestParam("current") int current,
+                                               @RequestParam("rowCount") int rowCount) {
+        String username = (String) session.getAttribute("username");
+        DataGrid<LeaveTask> grid = new DataGrid<>();
+        grid.setRowCount(rowCount);
+        grid.setCurrent(current);
+        int firstrow = (current - 1) * rowCount;
+        List<LeaveApply> results = leaveservice.getpagedepttask(username, firstrow, rowCount);
+        int totalsize = leaveservice.getalldepttask(username);
+        List<LeaveTask> tasks = getLeaveTasks(results);
         grid.setTotal(totalsize);
         grid.setRows(tasks);
         return grid;
@@ -242,29 +262,35 @@ public class ActivitiController {
         int firstrow = (current - 1) * rowCount;
         List<LeaveApply> results = leaveservice.getpagehrtask(username, firstrow, rowCount);
         int totalsize = leaveservice.getallhrtask(username);
-        List<LeaveTask> tasks = new ArrayList<LeaveTask>();
-        for (LeaveApply apply : results) {
-            LeaveTask task = new LeaveTask();
-            task.setApply_time(apply.getApply_time());
-            task.setUser_id(apply.getUser_id());
-            task.setEnd_time(apply.getEnd_time());
-            task.setId(apply.getId());
-            task.setLeave_type(apply.getLeave_type());
-            task.setProcess_instance_id(apply.getProcess_instance_id());
-            task.setProcessdefid(apply.getTask().getProcessDefinitionId());
-            task.setReason(apply.getReason());
-            task.setStart_time(apply.getStart_time());
-            task.setTaskcreatetime(apply.getTask().getCreateTime());
-            task.setTaskid(apply.getTask().getId());
-            task.setTaskname(apply.getTask().getName());
-            tasks.add(task);
-        }
+        List<LeaveTask> tasks = getLeaveTasks(results);
         grid.setRowCount(rowCount);
         grid.setCurrent(current);
         grid.setTotal(totalsize);
         grid.setRows(tasks);
         return grid;
     }
+
+
+    @ApiOperation("获取总经理审批待办列表")
+    @RequestMapping(value = "/presidenttasklist", method = RequestMethod.POST)
+    @ResponseBody
+    public DataGrid<LeaveTask> getPresidentTaskList(HttpSession session, @RequestParam("current") int current,
+                                                    @RequestParam("rowCount") int rowCount) {
+        DataGrid<LeaveTask> grid = new DataGrid<LeaveTask>();
+        grid.setRowCount(rowCount);
+        grid.setCurrent(current);
+        String username = (String) session.getAttribute("username");
+        int firstrow = (current - 1) * rowCount;
+        List<LeaveApply> results = leaveservice.getPagePresidetTask(username, firstrow, rowCount);
+        int totalsize = leaveservice.getAllPresidetTask(username);
+        List<LeaveTask> tasks = getLeaveTasks(results);
+        grid.setRowCount(rowCount);
+        grid.setCurrent(current);
+        grid.setTotal(totalsize);
+        grid.setRows(tasks);
+        return grid;
+    }
+
 
     @ApiOperation("获取销假任务列表")
     @RequestMapping(value = "/xjtasklist", method = RequestMethod.POST)
@@ -275,23 +301,7 @@ public class ActivitiController {
         String userid = (String) session.getAttribute("username");
         List<LeaveApply> results = leaveservice.getpageXJtask(userid, firstrow, rowCount);
         int totalsize = leaveservice.getallXJtask(userid);
-        List<LeaveTask> tasks = new ArrayList<LeaveTask>();
-        for (LeaveApply apply : results) {
-            LeaveTask task = new LeaveTask();
-            task.setApply_time(apply.getApply_time());
-            task.setUser_id(apply.getUser_id());
-            task.setEnd_time(apply.getEnd_time());
-            task.setId(apply.getId());
-            task.setLeave_type(apply.getLeave_type());
-            task.setProcess_instance_id(apply.getProcess_instance_id());
-            task.setProcessdefid(apply.getTask().getProcessDefinitionId());
-            task.setReason(apply.getReason());
-            task.setStart_time(apply.getStart_time());
-            task.setTaskcreatetime(apply.getTask().getCreateTime());
-            task.setTaskid(apply.getTask().getId());
-            task.setTaskname(apply.getTask().getName());
-            tasks.add(task);
-        }
+        List<LeaveTask> tasks = getLeaveTasks(results);
         DataGrid<LeaveTask> grid = new DataGrid<LeaveTask>();
         grid.setRowCount(rowCount);
         grid.setCurrent(current);
@@ -309,23 +319,7 @@ public class ActivitiController {
         String userid = (String) session.getAttribute("username");
         List<LeaveApply> results = leaveservice.getpageupdateapplytask(userid, firstrow, rowCount);
         int totalsize = leaveservice.getallupdateapplytask(userid);
-        List<LeaveTask> tasks = new ArrayList<LeaveTask>();
-        for (LeaveApply apply : results) {
-            LeaveTask task = new LeaveTask();
-            task.setApply_time(apply.getApply_time());
-            task.setUser_id(apply.getUser_id());
-            task.setEnd_time(apply.getEnd_time());
-            task.setId(apply.getId());
-            task.setLeave_type(apply.getLeave_type());
-            task.setProcess_instance_id(apply.getProcess_instance_id());
-            task.setProcessdefid(apply.getTask().getProcessDefinitionId());
-            task.setReason(apply.getReason());
-            task.setStart_time(apply.getStart_time());
-            task.setTaskcreatetime(apply.getTask().getCreateTime());
-            task.setTaskid(apply.getTask().getId());
-            task.setTaskname(apply.getTask().getName());
-            tasks.add(task);
-        }
+        List<LeaveTask> tasks = getLeaveTasks(results);
         DataGrid<LeaveTask> grid = new DataGrid<LeaveTask>();
         grid.setRowCount(rowCount);
         grid.setCurrent(current);
@@ -373,13 +367,30 @@ public class ActivitiController {
     @ResponseBody
     public MSG hrcomplete(HttpSession session, @PathVariable("taskid") String taskid, HttpServletRequest req) {
         String userid = (String) session.getAttribute("username");
-        Map<String, Object> variables = new HashMap<String, Object>();
+        Map<String, Object> variables = new HashMap<>();
         String approve = req.getParameter("hrapprove");
+        String president = req.getParameter("president");
         variables.put("hrapprove", approve);
+        variables.put("president", president);
         taskservice.claim(taskid, userid);
         taskservice.complete(taskid, variables);
         return new MSG("success");
     }
+
+    @ApiOperation("完成总经理审批待办")
+    @RequestMapping(value = "/task/presidentcomplete/{taskid}", method = RequestMethod.POST)
+    @ResponseBody
+    public MSG presidentComplete(HttpSession session, @PathVariable("taskid") String taskid, HttpServletRequest req) {
+        String userid = (String) session.getAttribute("username");
+        Map<String, Object> variables = new HashMap<>();
+        String approve = req.getParameter("presidentapprove");
+        variables.put("presidentapprove", approve);
+        taskservice.claim(taskid, userid);
+        taskservice.complete(taskid, variables);
+        return new MSG("success");
+    }
+
+
 
     @ApiOperation("完成销假待办")
     @RequestMapping(value = "/task/reportcomplete/{taskid}", method = RequestMethod.POST)

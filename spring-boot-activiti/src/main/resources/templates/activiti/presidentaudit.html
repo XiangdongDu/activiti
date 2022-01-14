@@ -1,4 +1,4 @@
-<script src="./js/hraudit.js"></script>
+<script src="./js/presidentaudit.js"></script>
 <!--Start Breadcrumb -->
 <div class="row">
     <div id="breadcrumb" class="col-xs-12">
@@ -9,7 +9,7 @@
             <li><a href="index">首页</a></li>
             <li><a href="#">我的待办任务</a></li>
             <li><a href="#">请假待办</a></li>
-            <li><a href="#">人事审批</a></li>
+            <li><a href="#">总经理审批</a></li>
         </ol>
     </div>
 </div>
@@ -19,7 +19,7 @@
             <div class="box ui-draggable ui-droppable">
                 <div class="box-header">
                     <div class="box-name">
-                        <i class="fa fa-coffee"></i> <span>人事审批</span>
+                        <i class="fa fa-coffee"></i> <span>总经理审批</span>
                     </div>
                     <div class="box-icons">
                         <a class="collapse-link"> <i class="fa fa-chevron-up"></i>
@@ -55,7 +55,7 @@
             <div class="box ui-draggable ui-droppable" id="dept">
                 <div class="box-header">
                     <div class="box-name">
-                        <i class="fa fa-search"></i> <span>人事审批</span>
+                        <i class="fa fa-search"></i> <span>总经理审批</span>
                     </div>
                     <div class="box-icons">
                         <a class="collapse-link"> <i class="fa fa-chevron-up"></i>
@@ -92,21 +92,15 @@
                             <input class="form-control" id="reason" readonly="readonly"/>
                         </div>
                         <div class="form-group">
-                            <label>审批意见</label>
+                            <label>总经理审批意见</label>
                             <div class="controls">
-                                <select name="hrapprove">
+                                <select name="presidentapprove">
                                     <option value="true">同意</option>
                                     <option value="false">拒绝</option>
                                 </select>
                             </div>
                         </div>
-                        <div id="isDisplay" style=”display:none”>
-                            <label>请选择总经理进行审批</label>
-                            <select id="president" name="president" class="form-control">
-                            </select>
-                        </div>
                         <button id="btn" type="button" class="btn btn-default">完成</button>
-
                     </form>
                 </div>
             </div>
@@ -118,19 +112,10 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-
-        //获取人事经理用户
-        $.get("/listManagerUsers/总经理", function (data) {
-            for (i = 0; i < data.length; i++) {
-                $("#president").append("<option value='" + data[i].username + "'>" + data[i].username + "</option>");
-            }
-        });
-
-
         $("#btn").click(function () {
-            $.post("task/hrcomplete/" + $("form").data("taskid"), $("form").serialize(), function (a) {
+            $.post("task/presidentcomplete/" + $("form").data("taskid"), $("form").serialize(), function (a) {
                 alert("处理成功");
-                LoadAjaxContent("hraudit");
+                LoadAjaxContent("presidentaudit");
             });
         });
     });

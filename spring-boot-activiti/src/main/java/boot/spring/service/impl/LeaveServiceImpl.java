@@ -51,14 +51,14 @@ public class LeaveServiceImpl implements LeaveService {
         identityservice.setAuthenticatedUserId(userid);
         int days = DateUtils.getDays(apply);
         ProcessInstance instance = null;
-        if (days == 1) {
+        if (days == 1) {//部门领导审批
             instance = runtimeservice.startProcessInstanceByKey("leaveDept", businesskey, variables);
 
-        } else if (days == 2) {
-            instance = runtimeservice.startProcessInstanceByKey("leaveDept", businesskey, variables);
-
-        } else if (days > 2) {
+        } else if (days == 2) {//HR审批
             instance = runtimeservice.startProcessInstanceByKey("leave", businesskey, variables);
+
+        } else if (days > 2) {//总经理审批
+            instance = runtimeservice.startProcessInstanceByKey("leavePresident", businesskey, variables);
         }
         String instanceid = instance.getId();
         apply.setProcess_instance_id(instanceid);
@@ -66,10 +66,14 @@ public class LeaveServiceImpl implements LeaveService {
         return instance;
     }
 
-    public List<LeaveApply> getpagedepttask(String username, int firstrow, int rowcount) {
-        List<LeaveApply> results = new ArrayList<LeaveApply>();
-        // 使用任务候选人查询待办列表
-        List<Task> tasks = taskservice.createTaskQuery().taskAssignee(username).taskName("部门领导审批").orderByTaskCreateTime().desc().listPage(firstrow, rowcount);
+    /**
+     * 使用业务号查出业务数据一起返回
+     *
+     * @param tasks
+     * @return
+     */
+    public List<LeaveApply> getPageTask(List<Task> tasks) {
+        List<LeaveApply> results = new ArrayList<>();
         for (Task task : tasks) {
             String instanceid = task.getProcessInstanceId();
             ProcessInstance ins = runtimeservice.createProcessInstanceQuery().processInstanceId(instanceid).singleResult();
@@ -79,6 +83,21 @@ public class LeaveServiceImpl implements LeaveService {
             a.setTask(task);
             results.add(a);
         }
+        return results;
+    }
+
+    /**
+     * 部门领导审批
+     *
+     * @param username
+     * @param firstrow
+     * @param rowcount
+     * @return
+     */
+    public List<LeaveApply> getpagedepttask(String username, int firstrow, int rowcount) {
+        // 使用任务候选人查询待办列表
+        List<Task> tasks = taskservice.createTaskQuery().taskAssignee(username).taskName("部门领导审批").orderByTaskCreateTime().desc().listPage(firstrow, rowcount);
+        List<LeaveApply> results = getPageTask(tasks);
         return results;
     }
 
@@ -92,17 +111,17 @@ public class LeaveServiceImpl implements LeaveService {
         return leave;
     }
 
+    /**
+     * 人事审批
+     *
+     * @param username
+     * @param firstrow
+     * @param rowcount
+     * @return
+     */
     public List<LeaveApply> getpagehrtask(String username, int firstrow, int rowcount) {
-        List<LeaveApply> results = new ArrayList<LeaveApply>();
         List<Task> tasks = taskservice.createTaskQuery().taskAssignee(username).taskName("人事审批").orderByTaskCreateTime().desc().listPage(firstrow, rowcount);
-        for (Task task : tasks) {
-            String instanceid = task.getProcessInstanceId();
-            ProcessInstance ins = runtimeservice.createProcessInstanceQuery().processInstanceId(instanceid).singleResult();
-            String businesskey = ins.getBusinessKey();
-            LeaveApply a = leavemapper.getLeaveApply(Integer.parseInt(businesskey));
-            a.setTask(task);
-            results.add(a);
-        }
+        List<LeaveApply> results = getPageTask(tasks);
         return results;
     }
 
@@ -112,17 +131,31 @@ public class LeaveServiceImpl implements LeaveService {
         return tasks.size();
     }
 
+
+    /**
+     * 总经理审批
+     *
+     * @param username
+     * @param firstrow
+     * @param rowcount
+     * @return
+     */
+    public List<LeaveApply> getPagePresidetTask(String username, int firstrow, int rowcount) {
+        List<Task> tasks = taskservice.createTaskQuery().taskAssignee(username).taskName("总经理审批").orderByTaskCreateTime().desc().listPage(firstrow, rowcount);
+        List<LeaveApply> results = getPageTask(tasks);
+        return results;
+    }
+
+
+    public int getAllPresidetTask(String username) {
+        List<Task> tasks = taskservice.createTaskQuery().taskAssignee(username).taskName("总经理审批").list();
+        return tasks.size();
+    }
+
+
     public List<LeaveApply> getpageXJtask(String userid, int firstrow, int rowcount) {
-        List<LeaveApply> results = new ArrayList<LeaveApply>();
         List<Task> tasks = taskservice.createTaskQuery().taskCandidateOrAssigned(userid).taskName("销假").orderByTaskCreateTime().desc().listPage(firstrow, rowcount);
-        for (Task task : tasks) {
-            String instanceid = task.getProcessInstanceId();
-            ProcessInstance ins = runtimeservice.createProcessInstanceQuery().processInstanceId(instanceid).singleResult();
-            String businesskey = ins.getBusinessKey();
-            LeaveApply a = leavemapper.getLeaveApply(Integer.parseInt(businesskey));
-            a.setTask(task);
-            results.add(a);
-        }
+        List<LeaveApply> results = getPageTask(tasks);
         return results;
     }
 
@@ -132,16 +165,8 @@ public class LeaveServiceImpl implements LeaveService {
     }
 
     public List<LeaveApply> getpageupdateapplytask(String userid, int firstrow, int rowcount) {
-        List<LeaveApply> results = new ArrayList<LeaveApply>();
         List<Task> tasks = taskservice.createTaskQuery().taskCandidateOrAssigned(userid).taskName("调整申请").orderByTaskCreateTime().desc().listPage(firstrow, rowcount);
-        for (Task task : tasks) {
-            String instanceid = task.getProcessInstanceId();
-            ProcessInstance ins = runtimeservice.createProcessInstanceQuery().processInstanceId(instanceid).singleResult();
-            String businesskey = ins.getBusinessKey();
-            LeaveApply a = leavemapper.getLeaveApply(Integer.parseInt(businesskey));
-            a.setTask(task);
-            results.add(a);
-        }
+        List<LeaveApply> results = getPageTask(tasks);
         return results;
     }
 
