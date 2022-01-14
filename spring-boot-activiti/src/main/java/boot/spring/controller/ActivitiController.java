@@ -168,7 +168,6 @@ public class ActivitiController {
     //dxd 总经理审批页面
     @RequestMapping(value = "/presidentaudit", method = RequestMethod.GET)
     public String president() {
-        System.out.println("========================>总经理审批页面...");
         return "activiti/presidentaudit";
     }
 
