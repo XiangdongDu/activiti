@@ -51,6 +51,7 @@ public class LeaveServiceImpl implements LeaveService {
         identityservice.setAuthenticatedUserId(userid);
         int days = DateUtils.getDays(apply);
         ProcessInstance instance = null;
+        logger.info("根据请假天数："+days+"天，选择对应审批流程。");
         if (days == 1) {//部门领导审批
             instance = runtimeservice.startProcessInstanceByKey("leaveDept", businesskey, variables);
 
