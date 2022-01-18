@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" expressionLanguage="http://www.w3.org/1999/XPath" id="m1642075166685" name="" targetNamespace="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema">
   <process id="leavePresident" isClosed="false" isExecutable="true" name="My process" processType="None">
-    <startEvent id="_2" name="StartEvent"/>
+    <startEvent id="start" name="StartEvent"/>
     <userTask activiti:assignee="${deptleader}" activiti:candidateGroups="部门经理" activiti:exclusive="true" id="deptleaderaudit" name="部门领导审批"/>
-    <sequenceFlow id="_3" sourceRef="_2" targetRef="deptleaderaudit"/>
+    <sequenceFlow id="_3" sourceRef="start" targetRef="deptleaderaudit"/>
     <exclusiveGateway gatewayDirection="Unspecified" id="exclusivegateway1" name="Exclusive Gateway"/>
     <sequenceFlow id="_5" sourceRef="deptleaderaudit" targetRef="exclusivegateway1"/>
     <userTask activiti:assignee="${hr}" activiti:candidateGroups="人事" activiti:exclusive="true" id="hraudit" name="人事审批"/>
@@ -28,8 +28,8 @@
     <sequenceFlow id="_15" name="拒绝" sourceRef="exclusivegateway3" targetRef="modifyapply">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${hrapprove=='false'}]]></conditionExpression>
     </sequenceFlow>
-    <endEvent id="_16" name="EndEvent"/>
-    <sequenceFlow id="_8" name="结束流程" sourceRef="exclusivegateway2" targetRef="_16">
+    <endEvent id="end" name="EndEvent"/>
+    <sequenceFlow id="_8" name="结束流程" sourceRef="exclusivegateway2" targetRef="end">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${reapply=='false'}]]></conditionExpression>
     </sequenceFlow>
     <userTask activiti:assignee="${applyuserid}" activiti:exclusive="true" id="reportback" name="销假"/>
@@ -41,11 +41,11 @@
     <sequenceFlow id="_21" name="同意" sourceRef="exclusivegateway4" targetRef="reportback">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${presidentapprove=='true'}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="_22" sourceRef="reportback" targetRef="_16"/>
+    <sequenceFlow id="_22" sourceRef="reportback" targetRef="end"/>
   </process>
   <bpmndi:BPMNDiagram documentation="background=#FFFFFF;count=1;horizontalcount=1;orientation=0;width=842.4;height=1195.2;imageableWidth=832.4;imageableHeight=1185.2;imageableX=5.0;imageableY=5.0" id="Diagram-_1" name="New Diagram">
     <bpmndi:BPMNPlane bpmnElement="leavePresident">
-      <bpmndi:BPMNShape bpmnElement="_2" id="Shape-_2">
+      <bpmndi:BPMNShape bpmnElement="start" id="Shape-start">
         <omgdc:Bounds height="32.0" width="32.0" x="35.0" y="120.0"/>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
@@ -70,7 +70,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="modifyapply" id="Shape-modifyapply">
-        <omgdc:Bounds height="55.0" width="85.0" x="250.0" y="240.0"/>
+        <omgdc:Bounds height="55.0" width="85.0" x="245.0" y="240.0"/>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="55.0" width="85.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
@@ -93,7 +93,7 @@
           <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="_16" id="Shape-_16">
+      <bpmndi:BPMNShape bpmnElement="end" id="Shape-end">
         <omgdc:Bounds height="32.0" width="32.0" x="830.0" y="355.0"/>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="32.0" width="32.0" x="0.0" y="0.0"/>
@@ -120,17 +120,17 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_15" id="BPMNEdge__15" sourceElement="exclusivegateway3" targetElement="modifyapply">
         <omgdi:waypoint x="570.0" y="148.0"/>
-        <omgdi:waypoint x="570.0" y="235.0"/>
-        <omgdi:waypoint x="335.0" y="267.5"/>
+        <omgdi:waypoint x="570.0" y="255.0"/>
+        <omgdi:waypoint x="330.0" y="255.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <omgdc:Bounds height="48.0" width="24.0" x="570.0" y="235.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_14" id="BPMNEdge__14" sourceElement="exclusivegateway3" targetElement="presidentaudit">
         <omgdi:waypoint x="582.0" y="136.0"/>
         <omgdi:waypoint x="675.0" y="137.5"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <omgdc:Bounds height="48.0" width="24.0" x="610.0" y="136.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_19" id="BPMNEdge__19" sourceElement="presidentaudit" targetElement="exclusivegateway4">
@@ -141,10 +141,11 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_20" id="BPMNEdge__20" sourceElement="exclusivegateway4" targetElement="modifyapply">
-        <omgdi:waypoint x="700.0" y="271.0"/>
-        <omgdi:waypoint x="335.0" y="267.5"/>
+        <omgdi:waypoint x="701.0" y="270.0"/>
+        <omgdi:waypoint x="515.0" y="270.0"/>
+        <omgdi:waypoint x="330.0" y="270.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <omgdc:Bounds height="48.0" width="24.0" x="500.0" y="270.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_22" id="BPMNEdge__22" sourceElement="reportback" targetElement="_16">
@@ -158,7 +159,7 @@
         <omgdi:waypoint x="732.0" y="271.0"/>
         <omgdi:waypoint x="805.0" y="272.5"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <omgdc:Bounds height="48.0" width="24.0" x="770.0" y="271.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_3" id="BPMNEdge__3" sourceElement="_2" targetElement="deptleaderaudit">
@@ -172,7 +173,7 @@
         <omgdi:waypoint x="286.0" y="152.0"/>
         <omgdi:waypoint x="286.0" y="240.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <omgdc:Bounds height="48.0" width="24.0" x="286.0" y="200.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_5" id="BPMNEdge__5" sourceElement="deptleaderaudit" targetElement="exclusivegateway1">
@@ -186,14 +187,14 @@
         <omgdi:waypoint x="302.0" y="136.0"/>
         <omgdi:waypoint x="415.0" y="137.5"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <omgdc:Bounds height="48.0" width="24.0" x="350.0" y="137.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_8" id="BPMNEdge__8" sourceElement="exclusivegateway2" targetElement="_16">
         <omgdi:waypoint x="302.0" y="371.0"/>
         <omgdi:waypoint x="830.0" y="371.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <omgdc:Bounds height="48.0" width="24.0" x="550.0" y="371.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="_9" id="BPMNEdge__9" sourceElement="modifyapply" targetElement="exclusivegateway2">
@@ -208,9 +209,9 @@
         <omgdi:waypoint x="160.0" y="270.0"/>
         <omgdi:waypoint x="160.0" y="165.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="0.0" width="0.0" x="0.0" y="0.0"/>
+          <omgdc:Bounds height="48.0" width="24.0" x="160.0" y="270.0"/>
         </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
+      </bpmndi:BPMNEdge> 
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </definitions>

@@ -115,7 +115,7 @@
         <omgdi:waypoint x="501.0" y="262.0"/>
         <omgdi:waypoint x="501.0" y="310.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="48.0" width="24.0" x="555.0" y="267.0"/>
+          <omgdc:Bounds height="48.0" width="24.0" x="501.0" y="280.0"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow6" id="BPMNEdge_flow6" sourceElement="deptleaderaudit" targetElement="exclusivegateway1">
