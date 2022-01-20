@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @Author duxiangdong
@@ -39,4 +41,24 @@ public class DateUtils {
         }
         return 0;
     }
+
+    /**
+     * 获取今天各种类型的日期格式
+     *
+     * @return
+     */
+    public static List<String> getTodayDate() {
+        List<String> today = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String today1 = sdf.format(new Date());
+        today.add(today1);
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy/MM/dd");
+        String today2 = sdf2.format(new Date());
+        today.add(today2);
+        SimpleDateFormat sdf3 = new SimpleDateFormat("yyyy.MM.dd");
+        String today3 = sdf3.format(new Date());
+        today.add(today3);
+        return today;
+    }
+
 }
