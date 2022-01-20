@@ -15,6 +15,7 @@ import java.util.List;
  * @Date 2022/1/20 12:40
  * @Version 1.0
  * @desc 百度智能云 图像文字识别通用文字识别接口
+ *  注意：access_token的有效期为30天，需要每30天进行定期更换；目前每月200次免费调用额度（注意使用次数）
  * 我的百度智能云地址 https://console.bce.baidu.com/ai/?_=1642668578548#/ai/ocr/overview/index
  * 参考文档
  * https://cloud.baidu.com/doc/OCR/s/Ikibizxql
