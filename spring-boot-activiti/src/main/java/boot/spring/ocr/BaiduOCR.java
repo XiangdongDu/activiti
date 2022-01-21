@@ -1,5 +1,6 @@
-package boot.spring.util;
+package boot.spring.ocr;
 
+import boot.spring.util.DateUtils;
 import com.baidu.aip.ocr.AipOcr;
 import groovy.util.logging.Slf4j;
 import org.json.JSONArray;
@@ -35,9 +36,10 @@ public class BaiduOCR {
 //        String path = "/Users/duxiangdong/F/work/lunwen/activiti/spring-boot-activiti/src/main/webapp/uploadfiles/jkm1.jpeg";
 
         // 高精度版本-调用接口  参数为本地图片路径请求格式支持：PNG、JPG、JPEG、BMP、TIFF、PNM、WebP
-        JSONObject accurateBasic = accurateBasic(path);
+//        JSONObject accurateBasic = accurateBasic(path);
         //校验健康码是否正常
-        String result = checkJKM(accurateBasic);
+//        String result = checkJKM(accurateBasic);
+        String result="正常";
         System.out.println("健康码检验结果=========>" + result);
 
     }

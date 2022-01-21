@@ -1,6 +1,7 @@
-package boot.spring.util;
+package boot.spring.ocr;
 
 import com.alibaba.fastjson.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;

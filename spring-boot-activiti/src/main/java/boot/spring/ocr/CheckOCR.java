@@ -1,4 +1,4 @@
-package boot.spring.util;
+package boot.spring.ocr;
 
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.NameValuePair;
