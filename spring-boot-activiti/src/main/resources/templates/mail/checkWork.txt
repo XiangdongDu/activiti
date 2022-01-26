@@ -1,0 +1,48 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:w="urn:schemas-microsoft-com:office:word"
+ xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
+ xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+  <meta http-equiv="Content-Type" content="text/html"; charset=gb2312">
+  <meta name="Generator" content="Microsoft Word 15 (filtered medium)">
+
+  <!-- [if !mso]>
+  <style>
+     v\:*{behavior:url(#default#VML);}
+     o\:*{behavior:url(#default#VML);}
+     w\:*{behavior:url(#default#VML);}
+     .shape{behavior:url(#default#VML);}
+  </style>
+ <![endif] -->
+<style>
+    table{border-collapse:collapse;}
+    th{font-size:11pt;text-align:center;border:solid 1pt black;padding:10pt 0;background:#D9D9D9;}
+    d{font-size:11pt;text-align:center;border:solid 1pt black;padding:10pt 0;}
+</style>
+</head>
+<body>
+<h2>${env}员工考勤统计如下：</h2>
+<h3>注意：有疑问请及时联系相关主管</h3>
+    <br>
+    <table  border="0" cellspacing="0" cellpadding="0">
+        <tbody>
+            <%for(node in nodes) {%>
+                <tr>
+                <%for(name in node) {%>
+                    <td nowrap width="200">
+                        ${name}
+                    </td>
+                 <%}%>
+
+                </tr>
+            <%}%>
+         </tbody>
+    </table>
+    <br>
+ </body>
+</html>
+
+
+
+

@@ -1,0 +1,33 @@
+<html xmlns:v="urn:schemas-microsoft-com:vml"
+ xmlns:o="urn:schemas-microsoft-com:office:office"
+ xmlns:w="urn:schemas-microsoft-com:office:word"
+ xmlns:m="http://schemas.microsoft.com/office/2004/12/omml"
+ xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+  <meta http-equiv="Content-Type" content="text/html"; charset=gb2312">
+  <meta name="Generator" content="Microsoft Word 15 (filtered medium)">
+
+  <!-- [if !mso]>
+  <style>
+     v\:*{behavior:url(#default#VML);}
+     o\:*{behavior:url(#default#VML);}
+     w\:*{behavior:url(#default#VML);}
+     .shape{behavior:url(#default#VML);}
+  </style>
+ <![endif] -->
+<style>
+    table{border-collapse:collapse;}
+    th{font-size:11pt;text-align:center;border:solid 1pt black;padding:10pt 0;background:#D9D9D9;}
+    d{font-size:11pt;text-align:center;border:solid 1pt black;padding:10pt 0;}
+</style>
+</head>
+<body>
+<h2>员工【${name}】健康码异常!!!</h2>
+    <h3>     请及时核对信息，上报相关部门,做好防护措施,立即隔离该员工，进行核酸检测!!!</h3>
+
+ </body>
+</html>
+
+
+
+

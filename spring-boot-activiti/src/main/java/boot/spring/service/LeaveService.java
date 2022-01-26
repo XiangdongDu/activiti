@@ -2,14 +2,22 @@ package boot.spring.service;
 
 import java.util.List;
 import java.util.Map;
-
+import boot.spring.pagemodel.MSG;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.runtime.ProcessInstance;
 import boot.spring.po.LeaveApply;
+import org.springframework.web.multipart.MultipartFile;
 
 
 public interface LeaveService {
+
+    MSG uploadJKMFile(MultipartFile file, String username);
+
+    void sendWorkMail(String username);
+
+    void sendJKMMail(String username);
+
     ProcessInstance startWorkflow(LeaveApply apply, String userid, Map<String, Object> variables);
 
     List<LeaveApply> getpagedepttask(String userid, int firstrow, int rowcount);

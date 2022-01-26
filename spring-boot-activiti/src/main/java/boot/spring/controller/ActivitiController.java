@@ -1,24 +1,16 @@
 package boot.spring.controller;
 
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
+import boot.spring.mapper.LeaveApplyMapper;
+import boot.spring.pagemodel.*;
+import boot.spring.pagemodel.Process;
+import boot.spring.po.LeaveApply;
+import boot.spring.service.LeaveService;
+import boot.spring.service.SystemService;
 import boot.spring.util.DateUtils;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.engine.FormService;
-import org.activiti.engine.HistoryService;
-import org.activiti.engine.IdentityService;
-import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
-import org.activiti.engine.TaskService;
+import org.activiti.engine.*;
 import org.activiti.engine.history.HistoricActivityInstance;
 import org.activiti.engine.history.HistoricProcessInstance;
 import org.activiti.engine.history.HistoricProcessInstanceQuery;
@@ -26,41 +18,28 @@ import org.activiti.engine.impl.RepositoryServiceImpl;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.repository.ProcessDefinition;
 import org.activiti.engine.runtime.ProcessInstance;
-import org.activiti.engine.runtime.ProcessInstanceQuery;
 import org.activiti.engine.task.Task;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.alibaba.fastjson.JSON;
-import boot.spring.pagemodel.Process;
-import boot.spring.mapper.LeaveApplyMapper;
-import boot.spring.pagemodel.DataGrid;
-import boot.spring.pagemodel.HistoryProcess;
-import boot.spring.pagemodel.LeaveTask;
-import boot.spring.pagemodel.MSG;
-import boot.spring.po.LeaveApply;
-import boot.spring.po.Permission;
-import boot.spring.po.Role;
-import boot.spring.po.Role_permission;
-import boot.spring.po.User;
-import boot.spring.po.User_role;
-import boot.spring.service.LeaveService;
-import boot.spring.service.SystemService;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Api(value = "请假流程接口")
 @Controller
 public class ActivitiController {
+
     @Autowired
     RepositoryService rep;
 
@@ -88,13 +67,14 @@ public class ActivitiController {
     @Autowired
     LeaveApplyMapper leaveApplyMapper;
 
+
     @RequestMapping(value = "/processlist", method = RequestMethod.GET)
     String process() {
         return "activiti/processlist";
     }
 
     @ApiOperation("上传一个工作流文件")
-    @RequestMapping(value = "/uploadworkflow", method = RequestMethod.POST)
+    @RequestMapping(value = "/uploadworkflowjkm", method = RequestMethod.POST)
     public String fileupload(@RequestParam MultipartFile uploadfile, HttpServletRequest request) {
         try {
             MultipartFile file = uploadfile;
@@ -105,6 +85,15 @@ public class ActivitiController {
             e.printStackTrace();
         }
         return "index";
+    }
+
+    @ApiOperation("上传一个健康码文件")
+    @ResponseBody
+    @RequestMapping(value = "/uploadjkmfile", method = RequestMethod.POST)
+    public MSG uploadJKMFile(HttpSession session, @RequestParam MultipartFile file) {
+        String username = (String) session.getAttribute("username");
+        MSG msg = leaveservice.uploadJKMFile(file, username);
+        return msg;
     }
 
     @ApiOperation("查询已部署工作流列表")
@@ -388,7 +377,6 @@ public class ActivitiController {
         taskservice.complete(taskid, variables);
         return new MSG("success");
     }
-
 
 
     @ApiOperation("完成销假待办")

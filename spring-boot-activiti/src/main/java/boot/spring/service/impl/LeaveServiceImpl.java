@@ -1,9 +1,15 @@
 package boot.spring.service.impl;
 
 import boot.spring.mapper.LeaveApplyMapper;
+import boot.spring.ocr.BaiduOCR;
+import boot.spring.pagemodel.MSG;
 import boot.spring.po.LeaveApply;
 import boot.spring.service.LeaveService;
 import boot.spring.util.DateUtils;
+import boot.spring.util.excel.ExportExcelWrapper;
+import boot.spring.util.mail.BeetHelper;
+import boot.spring.util.mail.MailHelper;
+import boot.spring.util.mail.MapHolder;
 import com.github.pagehelper.PageHelper;
 import groovy.util.logging.Slf4j;
 import org.activiti.engine.IdentityService;
@@ -15,6 +21,7 @@ import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +29,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -41,6 +52,125 @@ public class LeaveServiceImpl implements LeaveService {
     @Autowired
     TaskService taskservice;
 
+    @Autowired
+    LeaveService leaveservice;
+
+    @Autowired
+    MailHelper mailHelper;
+
+    @Autowired
+    BeetHelper beetHelper;
+
+    @Override
+    public MSG uploadJKMFile(MultipartFile file, String username) {
+        if (file.isEmpty()) {
+            return new MSG("文件为空");
+        }
+        // 获取文件名
+        String fileName = file.getOriginalFilename();
+        System.out.println("上传的文件名为：" + fileName);
+        // 获取文件的后缀名
+        String suffixName = fileName.substring(fileName.lastIndexOf("."));
+        System.out.println("上传的后缀名为：" + suffixName);
+        // 创建返回值
+        boolean flag = false;
+        if (suffixName.toLowerCase().endsWith(".jpg")
+                || suffixName.toLowerCase().endsWith(".png")
+                || suffixName.toLowerCase().endsWith(".jpeg")) {
+            flag = true;
+        }
+        if (flag) {
+            //获取当前项目的相对路径的根目录
+            String rootPath = System.getProperty("user.dir");
+            // 文件上传后的路径
+            String filePath = rootPath + "/src/main/webapp/uploadfiles/" + username + "/";
+            System.out.println("上传的文件名路径===>" + filePath);
+
+            File dest = new File(filePath + fileName);
+            // 检测是否存在目录
+            if (!dest.getParentFile().exists()) {
+                dest.getParentFile().mkdirs();
+            }
+            // 高精度版本-调用接口  参数为本地图片路径请求格式支持：PNG、JPG、JPEG、BMP、TIFF、PNM、WebP
+//            JSONObject accurateBasic = BaiduOCR.accurateBasic(filePath);
+            //校验健康码是否正常
+//            String result = BaiduOCR.checkJKM(accurateBasic);
+            String result = "异常";
+            logger.info("健康码检验结果=========>{}", result);
+            try {
+                if (result.equals("正常")) {
+                    file.transferTo(dest);
+                    return new MSG("上传文件成功！");
+                } else if (result.equals("异常")) {
+                    file.transferTo(dest);
+                    leaveservice.sendJKMMail(username);
+                    return new MSG("上传文件成功！");
+                } else {
+                    return new MSG(result);
+                }
+
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else {
+            return new MSG("图片格式不符合！请重新上传！");
+        }
+        logger.error("上传文件失败");
+        return new MSG("上传文件失败！");
+    }
+
+
+    /**
+     * 健康码邮件
+     *
+     * @param username
+     */
+    @Override
+    public void sendJKMMail(String username) {
+        try {
+            //收件人
+            String[] emailNames = {"18896588320@163.com"};
+            //抄送人
+            String[] cc = {"952184740@qq.com"};
+            Map<String, Object> map = MapHolder.create().put("name", username).get();
+            mailHelper.syncSendMailAddFile(emailNames, cc, "健康码警报-【" + username + "】健康码异常", beetHelper.getContent("/templates/mail/checkJKM.txt", map), null, null);
+            logger.info("健康码邮件发送成功");
+        } catch (Exception e) {
+            logger.error("健康码邮件发送失败{}", e);
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 考勤邮件
+     *
+     * @param username
+     */
+    @Override
+    public void sendWorkMail(String username) {
+        try {
+
+            String[] emailNames = {"18896588320@163.com"};
+            //抄送人
+            String[] cc = {"952184740@qq.com"};
+            List<String> list = new ArrayList<>();
+            list.add("a");
+            list.add("b");
+            list.add("c");
+            List<List> listA = new ArrayList<>();
+            listA.add(list);
+            ExportExcelWrapper<Object> util = new ExportExcelWrapper<>();
+            ByteArrayOutputStream baops = util.exportExcel(list);
+            Map<String, Object> map = MapHolder.create().put("nodes", listA).put("env", "考勤").put("names", "员工考勤").get();
+            mailHelper.syncSendMailAddFile(emailNames, cc, "考勤邮件-" + username + "考勤", beetHelper.getContent("/templates/mail/checkWork.txt", map), "员工考勤.xlsx", baops);
+            logger.info("考勤邮件发送成功");
+        } catch (Exception e) {
+            logger.error("考勤邮件发送失败{}", e);
+            e.printStackTrace();
+        }
+    }
 
     public ProcessInstance startWorkflow(LeaveApply apply, String userid, Map<String, Object> variables) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -51,7 +181,7 @@ public class LeaveServiceImpl implements LeaveService {
         identityservice.setAuthenticatedUserId(userid);
         int days = DateUtils.getDays(apply);
         ProcessInstance instance = null;
-        logger.info("根据请假天数："+days+"天，选择对应审批流程。");
+        logger.info("根据请假天数：" + days + "天，选择对应审批流程。");
         if (days == 1) {//部门领导审批
             instance = runtimeservice.startProcessInstanceByKey("leaveDept", businesskey, variables);
 
