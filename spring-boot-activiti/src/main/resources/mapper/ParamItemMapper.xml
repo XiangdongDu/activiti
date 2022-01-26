@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="boot.spring.mapper.ParamItemMapper">
+    <select id="getParamItem" resultType="boot.spring.po.ParamItem">
+		select * from param_item where param_name="EMAIL_GROUP"
+	</select>
+
+</mapper>

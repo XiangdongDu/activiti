@@ -1,10 +1,13 @@
 package boot.spring.service.impl;
 
 import boot.spring.mapper.LeaveApplyMapper;
+import boot.spring.mapper.ParamItemMapper;
 import boot.spring.ocr.BaiduOCR;
 import boot.spring.pagemodel.MSG;
 import boot.spring.po.LeaveApply;
+import boot.spring.po.ParamItem;
 import boot.spring.service.LeaveService;
+import boot.spring.util.AppException;
 import boot.spring.util.DateUtils;
 import boot.spring.util.excel.ExportExcelWrapper;
 import boot.spring.util.mail.BeetHelper;
@@ -21,6 +24,7 @@ import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.beetl.ext.simulate.JsonUtil;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +40,8 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static boot.spring.util.Constants.ERRORCODE_MAILEERROR;
 
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 5000)
 @Service
@@ -61,61 +67,63 @@ public class LeaveServiceImpl implements LeaveService {
     @Autowired
     BeetHelper beetHelper;
 
-    @Override
-    public MSG uploadJKMFile(MultipartFile file, String username) {
-        if (file.isEmpty()) {
-            return new MSG("文件为空");
-        }
-        // 获取文件名
-        String fileName = file.getOriginalFilename();
-        System.out.println("上传的文件名为：" + fileName);
-        // 获取文件的后缀名
-        String suffixName = fileName.substring(fileName.lastIndexOf("."));
-        System.out.println("上传的后缀名为：" + suffixName);
-        // 创建返回值
-        boolean flag = false;
-        if (suffixName.toLowerCase().endsWith(".jpg")
-                || suffixName.toLowerCase().endsWith(".png")
-                || suffixName.toLowerCase().endsWith(".jpeg")) {
-            flag = true;
-        }
-        if (flag) {
-            //获取当前项目的相对路径的根目录
-            String rootPath = System.getProperty("user.dir");
-            // 文件上传后的路径
-            String filePath = rootPath + "/src/main/webapp/uploadfiles/" + username + "/";
-            System.out.println("上传的文件名路径===>" + filePath);
 
-            File dest = new File(filePath + fileName);
-            // 检测是否存在目录
-            if (!dest.getParentFile().exists()) {
-                dest.getParentFile().mkdirs();
+    @Autowired
+    ParamItemMapper paramItemMapper;
+
+    @Override
+    public MSG uploadJKMFile(MultipartFile file, String username) throws AppException {
+        try {
+            if (file.isEmpty()) {
+                return new MSG("文件为空");
             }
-            // 高精度版本-调用接口  参数为本地图片路径请求格式支持：PNG、JPG、JPEG、BMP、TIFF、PNM、WebP
+            // 获取文件名
+            String fileName = file.getOriginalFilename();
+            logger.info("上传的文件名为：" + fileName);
+            // 获取文件的后缀名
+            String suffixName = fileName.substring(fileName.lastIndexOf("."));
+            logger.info("上传的后缀名为：" + suffixName);
+            // 创建返回值
+            boolean flag = false;
+            if (suffixName.toLowerCase().endsWith(".jpg")
+                    || suffixName.toLowerCase().endsWith(".png")
+                    || suffixName.toLowerCase().endsWith(".jpeg")) {
+                flag = true;
+            }
+            if (flag) {
+                //获取当前项目的相对路径的根目录
+                String rootPath = System.getProperty("user.dir");
+                // 文件上传后的路径
+                String filePath = rootPath + "/src/main/webapp/uploadfiles/" + username + "/";
+                logger.info("上传的文件名路径===>{}", filePath);
+
+                File dest = new File(filePath + fileName);
+                // 检测是否存在目录
+                if (!dest.getParentFile().exists()) {
+                    dest.getParentFile().mkdirs();
+                }
+                // 高精度版本-调用接口  参数为本地图片路径请求格式支持：PNG、JPG、JPEG、BMP、TIFF、PNM、WebP
 //            JSONObject accurateBasic = BaiduOCR.accurateBasic(filePath);
-            //校验健康码是否正常
+                //校验健康码是否正常
 //            String result = BaiduOCR.checkJKM(accurateBasic);
-            String result = "异常";
-            logger.info("健康码检验结果=========>{}", result);
-            try {
+                String result = "异常";
+                logger.info("健康码检验结果=========>{}", result);
+                file.transferTo(dest);
                 if (result.equals("正常")) {
-                    file.transferTo(dest);
                     return new MSG("上传文件成功！");
                 } else if (result.equals("异常")) {
-                    file.transferTo(dest);
-                    leaveservice.sendJKMMail(username);
-                    return new MSG("上传文件成功！");
+                    String mail = leaveservice.sendJKMMail(username);
+                    return new MSG("上传文件成功！" + mail);
                 } else {
                     return new MSG(result);
                 }
-
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } else {
+                return new MSG("图片格式不符合！请重新上传！");
             }
-        } else {
-            return new MSG("图片格式不符合！请重新上传！");
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         logger.error("上传文件失败");
         return new MSG("上传文件失败！");
@@ -128,19 +136,34 @@ public class LeaveServiceImpl implements LeaveService {
      * @param username
      */
     @Override
-    public void sendJKMMail(String username) {
+    public String sendJKMMail(String username) {
         try {
             //收件人
-            String[] emailNames = {"18896588320@163.com"};
+            String[] toAdder = {};
             //抄送人
-            String[] cc = {"952184740@qq.com"};
+            String[] cc = {};
+            List<ParamItem> paramItem = paramItemMapper.getParamItem();
+            for (int i = 0; i < paramItem.size(); i++) {
+                if (paramItem.get(i).getItem_name().equals("toAdder") &&
+                        !paramItem.get(i).getItem_attr().trim().equals("")) {
+                    //收件人
+                    toAdder = paramItem.get(i).getItem_attr().split(";");
+                } else if (paramItem.get(i).getItem_name().equals("toAdder_CC") &&
+                        !paramItem.get(i).getItem_attr().trim().equals("")) {
+                    //抄送人
+                    cc = paramItem.get(i).getItem_attr().split(";");
+                }
+            }
+
             Map<String, Object> map = MapHolder.create().put("name", username).get();
-            mailHelper.syncSendMailAddFile(emailNames, cc, "健康码警报-【" + username + "】健康码异常", beetHelper.getContent("/templates/mail/checkJKM.txt", map), null, null);
-            logger.info("健康码邮件发送成功");
+            mailHelper.syncSendMailAddFile(toAdder, cc, "健康码警报-【" + username + "】健康码异常", beetHelper.getContent("/templates/mail/checkJKM.txt", map), null, null);
+            logger.info("健康码邮件发送成功!");
+            return "健康码邮件发送成功!";
         } catch (Exception e) {
-            logger.error("健康码邮件发送失败{}", e);
+            logger.error("健康码邮件发送失败!{}", e);
             e.printStackTrace();
         }
+        return "健康码邮件发送失败!";
     }
 
     /**
@@ -151,10 +174,22 @@ public class LeaveServiceImpl implements LeaveService {
     @Override
     public void sendWorkMail(String username) {
         try {
-
-            String[] emailNames = {"18896588320@163.com"};
+            //收件人
+            String[] toAdder = {};
             //抄送人
-            String[] cc = {"952184740@qq.com"};
+            String[] cc = {};
+            List<ParamItem> paramItem = paramItemMapper.getParamItem();
+            for (int i = 0; i < paramItem.size(); i++) {
+                if (paramItem.get(i).getItem_name().equals("toAdder") &&
+                        !paramItem.get(i).getItem_attr().trim().equals("")) {
+                    //收件人
+                    toAdder = paramItem.get(i).getItem_attr().split(";");
+                } else if (paramItem.get(i).getItem_name().equals("toAdder_CC") &&
+                        !paramItem.get(i).getItem_attr().trim().equals("")) {
+                    //抄送人
+                    cc = paramItem.get(i).getItem_attr().split(";");
+                }
+            }
             List<String> list = new ArrayList<>();
             list.add("a");
             list.add("b");
@@ -164,7 +199,7 @@ public class LeaveServiceImpl implements LeaveService {
             ExportExcelWrapper<Object> util = new ExportExcelWrapper<>();
             ByteArrayOutputStream baops = util.exportExcel(list);
             Map<String, Object> map = MapHolder.create().put("nodes", listA).put("env", "考勤").put("names", "员工考勤").get();
-            mailHelper.syncSendMailAddFile(emailNames, cc, "考勤邮件-" + username + "考勤", beetHelper.getContent("/templates/mail/checkWork.txt", map), "员工考勤.xlsx", baops);
+            mailHelper.syncSendMailAddFile(toAdder, cc, "考勤邮件-" + username + "考勤", beetHelper.getContent("/templates/mail/checkWork.txt", map), "员工考勤.xlsx", baops);
             logger.info("考勤邮件发送成功");
         } catch (Exception e) {
             logger.error("考勤邮件发送失败{}", e);

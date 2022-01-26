@@ -49,4 +49,10 @@ public class AppException extends Exception {
         }
     }
 
+    public AppException(String errorCode, String errorDetail) {
+        this.errorCode = errorCode;
+        this.errorMessage = errorDetail;
+        this.errorDetailMessage = errorDetail;
+    }
+
 }

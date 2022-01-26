@@ -6,6 +6,7 @@ import boot.spring.pagemodel.Process;
 import boot.spring.po.LeaveApply;
 import boot.spring.service.LeaveService;
 import boot.spring.service.SystemService;
+import boot.spring.util.AppException;
 import boot.spring.util.DateUtils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -90,7 +91,7 @@ public class ActivitiController {
     @ApiOperation("上传一个健康码文件")
     @ResponseBody
     @RequestMapping(value = "/uploadjkmfile", method = RequestMethod.POST)
-    public MSG uploadJKMFile(HttpSession session, @RequestParam MultipartFile file) {
+    public MSG uploadJKMFile(HttpSession session, @RequestParam MultipartFile file) throws AppException {
         String username = (String) session.getAttribute("username");
         MSG msg = leaveservice.uploadJKMFile(file, username);
         return msg;

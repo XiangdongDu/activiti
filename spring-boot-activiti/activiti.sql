@@ -201,3 +201,49 @@ INSERT INTO myActiviti.permission (permissionname) VALUES ('调整申请');
 INSERT INTO myActiviti.permission (permissionname) VALUES ('部门领导审批');
 INSERT INTO myActiviti.permission (permissionname) VALUES ('销假');
 
+
+-- ----------------------------
+-- Table structure for mail_info 邮件配置信息表
+-- ---------------------------
+DROP TABLE IF EXISTS `mail_info`;
+CREATE TABLE `mail_info` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `host` varchar(20) NOT NULL COMMENT '主机服务器地址',
+  `port` int(11) NOT NULL COMMENT '主机服务器端口',
+  `username` varchar(20) NOT NULL COMMENT '用户名',
+  `password` varchar(20) NOT NULL COMMENT '邮箱授权码',
+  `timeout` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `mail_info_username_uindex` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT  CHARACTER SET = utf8 COLLATE = utf8_general_ci  COMMENT='邮件配置信息表';
+
+
+INSERT INTO mail_info(host, port, username, password,timeout)
+VALUE ("smtp.163.com",25,"18896588320@163.com","UFPPUHFOQCPZVEZA",70000);
+
+
+
+-- ----------------------------
+-- Table structure for param_item 参数配置表
+-- ---------------------------
+DROP TABLE IF EXISTS `param_item`;
+CREATE TABLE `param_item` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `param_name` varchar(50) NOT NULL COMMENT '参数类型',
+  `item_name` varchar(50) NOT NULL COMMENT '参数名称',
+  `item_info` varchar(50) DEFAULT NULL COMMENT '参数描述',
+  `item_attr` longtext COMMENT '参数属性值',
+  `status` varchar(2) DEFAULT '1' COMMENT '参数状态（1：正常；0：失效）',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `param_item_id_uindex` (`id`)
+) ENGINE=InnoDB DEFAULT  CHARACTER SET = utf8 COLLATE = utf8_general_ci  COMMENT='参数配置表';
+
+
+
+INSERT INTO param_item(param_name, item_name, item_info, item_attr, status) VALUE
+  ("EMAIL_GROUP","toAdder","邮件收件人组","18896588320@163.com","1");
+
+INSERT INTO param_item(param_name, item_name, item_info, item_attr, status) VALUE
+  ("EMAIL_GROUP","toAdder_CC","邮件抄送人组","952184740@qq.com","1");
+
+
