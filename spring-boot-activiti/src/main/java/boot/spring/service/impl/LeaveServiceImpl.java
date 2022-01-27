@@ -139,22 +139,9 @@ public class LeaveServiceImpl implements LeaveService {
     public String sendJKMMail(String username) {
         try {
             //收件人
-            String[] toAdder = {};
+            String[] toAdder = getToAdder();
             //抄送人
-            String[] cc = {};
-            List<ParamItem> paramItem = paramItemMapper.getParamItem();
-            for (int i = 0; i < paramItem.size(); i++) {
-                if (paramItem.get(i).getItem_name().equals("toAdder") &&
-                        !paramItem.get(i).getItem_attr().trim().equals("")) {
-                    //收件人
-                    toAdder = paramItem.get(i).getItem_attr().split(";");
-                } else if (paramItem.get(i).getItem_name().equals("toAdder_CC") &&
-                        !paramItem.get(i).getItem_attr().trim().equals("")) {
-                    //抄送人
-                    cc = paramItem.get(i).getItem_attr().split(";");
-                }
-            }
-
+            String[] cc = getToAdderCC();
             Map<String, Object> map = MapHolder.create().put("name", username).get();
             mailHelper.syncSendMailAddFile(toAdder, cc, "健康码警报-【" + username + "】健康码异常", beetHelper.getContent("/templates/mail/checkJKM.txt", map), null, null);
             logger.info("健康码邮件发送成功!");
@@ -175,21 +162,9 @@ public class LeaveServiceImpl implements LeaveService {
     public void sendWorkMail(String username) {
         try {
             //收件人
-            String[] toAdder = {};
+            String[] toAdder = getToAdder();
             //抄送人
-            String[] cc = {};
-            List<ParamItem> paramItem = paramItemMapper.getParamItem();
-            for (int i = 0; i < paramItem.size(); i++) {
-                if (paramItem.get(i).getItem_name().equals("toAdder") &&
-                        !paramItem.get(i).getItem_attr().trim().equals("")) {
-                    //收件人
-                    toAdder = paramItem.get(i).getItem_attr().split(";");
-                } else if (paramItem.get(i).getItem_name().equals("toAdder_CC") &&
-                        !paramItem.get(i).getItem_attr().trim().equals("")) {
-                    //抄送人
-                    cc = paramItem.get(i).getItem_attr().split(";");
-                }
-            }
+            String[] cc = getToAdderCC();
             List<String> list = new ArrayList<>();
             list.add("a");
             list.add("b");
@@ -205,6 +180,35 @@ public class LeaveServiceImpl implements LeaveService {
             logger.error("考勤邮件发送失败{}", e);
             e.printStackTrace();
         }
+    }
+
+    //收件人
+    private String[] getToAdder() {
+        String[] toAdder = null;
+        List<ParamItem> paramItem = paramItemMapper.getParamItem();
+        for (int i = 0; i < paramItem.size(); i++) {
+            if (paramItem.get(i).getItem_name().equals("toAdder") &&
+                    !paramItem.get(i).getItem_attr().trim().equals("")) {
+                //收件人
+                toAdder = paramItem.get(i).getItem_attr().split(";");
+            }
+        }
+        return toAdder;
+    }
+
+    //抄送人
+    private String[] getToAdderCC() {
+        //抄送人
+        String[] cc = null;
+        List<ParamItem> paramItem = paramItemMapper.getParamItem();
+        for (int i = 0; i < paramItem.size(); i++) {
+            if (paramItem.get(i).getItem_name().equals("toAdder_CC") &&
+                    !paramItem.get(i).getItem_attr().trim().equals("")) {
+                //抄送人
+                cc = paramItem.get(i).getItem_attr().split(";");
+            }
+        }
+        return cc;
     }
 
     public ProcessInstance startWorkflow(LeaveApply apply, String userid, Map<String, Object> variables) {

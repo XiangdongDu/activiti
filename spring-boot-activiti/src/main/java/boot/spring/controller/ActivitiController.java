@@ -69,6 +69,16 @@ public class ActivitiController {
     LeaveApplyMapper leaveApplyMapper;
 
 
+    /**
+     * 健康码截图上传菜单
+     * @return
+     */
+    @RequestMapping(value = "/jkmlist", method = RequestMethod.GET)
+    String jkmProcess() {
+        return "activiti/jkmlist";
+    }
+
+
     @RequestMapping(value = "/processlist", method = RequestMethod.GET)
     String process() {
         return "activiti/processlist";
