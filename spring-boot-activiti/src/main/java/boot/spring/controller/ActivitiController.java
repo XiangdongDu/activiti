@@ -85,7 +85,7 @@ public class ActivitiController {
     }
 
     @ApiOperation("上传一个工作流文件")
-    @RequestMapping(value = "/uploadworkflowjkm", method = RequestMethod.POST)
+    @RequestMapping(value = "/uploadworkflow", method = RequestMethod.POST)
     public String fileupload(@RequestParam MultipartFile uploadfile, HttpServletRequest request) {
         try {
             MultipartFile file = uploadfile;
