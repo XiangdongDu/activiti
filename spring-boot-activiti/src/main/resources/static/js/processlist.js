@@ -8,14 +8,6 @@ $(document).ready(function () {
 
 });
 
-$("#jkm").submit(function () {
-    if ($("#uploadjkm").val() == "") {
-        alert("请选择健康码文件上传！");
-        return false;
-    }
- });
-
-
 $(document).ready(function () {
     var grid = $("#grid-data").bootgrid({
         ajax: true,

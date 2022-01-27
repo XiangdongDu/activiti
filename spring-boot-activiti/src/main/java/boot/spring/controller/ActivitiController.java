@@ -71,6 +71,7 @@ public class ActivitiController {
 
     /**
      * 健康码截图上传菜单
+     *
      * @return
      */
     @RequestMapping(value = "/jkmlist", method = RequestMethod.GET)

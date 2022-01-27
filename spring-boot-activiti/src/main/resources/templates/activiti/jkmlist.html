@@ -1,4 +1,3 @@
-<script src="./js/processlist.js"></script>
 <!--Start Breadcrumb-->
 <div class="row">
     <div id="breadcrumb" class="col-xs-12">
@@ -30,11 +29,11 @@
                 <div class="box-content">
                     <form id="jkm" action="uploadjkmfile" method="post" enctype="multipart/form-data">
                         <div class="form-group">
-                            <label for="uploadjkm">健康码截图</label>
+                            <label for="uploadjkm">健康码截图(低于1024KB)</label>
                             <!--name="file" 必须和后端接口入参名称完全一致 （MultipartFile file）-->
                             <input type="file" name="file" class="form-control" id="uploadjkm"/>
                         </div>
-                        <button type="submit" class="btn btn-primary">上传</button>
+                        <button id="btn" type="submit" class="btn btn-primary">上传</button>
                     </form>
                 </div>
             </div>
@@ -42,3 +41,30 @@
     </div>
 </div>
 <!-- /.container-fluid -->
+<!--获取form元素，调用其ajaxForm(...)方法-->
+<script src="./js/jquery-form.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#jkm").submit(function () {
+            var fileSize = $("#uploadjkm")[0].files[0].size / 1024;
+            if (fileSize > 1024) {
+                alert("上传单个文件大小不能超过1024KB!");
+                return false;
+            }
+            if ($("#uploadjkm").val() == "") {
+                alert("请选择健康码文件上传！");
+                return false;
+            }
+        });
+        $(function () {
+            /*
+             获取form元素，调用其ajaxForm(...)方法
+             内部的function(data)的data就是后台返回的数据
+             */
+            $("#jkm").ajaxForm(function (data) {
+                alert(data.state);
+            });
+        });
+
+    });
+</script>
