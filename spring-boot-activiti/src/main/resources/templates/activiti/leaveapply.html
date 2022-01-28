@@ -90,9 +90,13 @@
                 return;
             }
 
-            $.post("startleave", $("form").serialize(), function () {
-                alert("申请成功");
-                LoadAjaxContent("leaveapply");
+            $.post("startleave", $("form").serialize(), function (msg) {
+                if (msg.state=="success"){
+                    alert("申请成功");
+                    LoadAjaxContent("leaveapply");
+                }else {
+                    alert("申请失败，周六周日不需要请假!");
+                }
             });
         });
 

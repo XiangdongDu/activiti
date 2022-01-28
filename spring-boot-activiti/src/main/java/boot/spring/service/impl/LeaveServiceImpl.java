@@ -218,7 +218,7 @@ public class LeaveServiceImpl implements LeaveService {
         leavemapper.save(apply);
         String businesskey = String.valueOf(apply.getId());//使用leaveapply表的主键作为businesskey,连接业务数据和流程数据
         identityservice.setAuthenticatedUserId(userid);
-        int days = DateUtils.getDays(apply);
+        int days = DateUtils.getDutyDays(apply.getStart_time(), apply.getEnd_time());
         ProcessInstance instance = null;
         logger.info("根据请假天数：" + days + "天，选择对应审批流程。");
         if (days == 1) {//部门领导审批
@@ -229,6 +229,9 @@ public class LeaveServiceImpl implements LeaveService {
 
         } else if (days > 2) {//总经理审批
             instance = runtimeservice.startProcessInstanceByKey("leavePresident", businesskey, variables);
+        } else {
+
+            return null;
         }
         String instanceid = instance.getId();
         apply.setProcess_instance_id(instanceid);

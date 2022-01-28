@@ -21,13 +21,38 @@ public class DateUtils {
     private static final Logger logger = LoggerFactory.getLogger(LeaveServiceImpl.class);
 
     /**
-     * 获取两个日期之间的天数
+     * 获取两个日期之间的工作日天数（排除节假日以及周六周日）
      *
-     * @param apply
+     * @param strStartDate
+     * @param strEndDate
+     * @return
      */
-    public static Integer getDays(LeaveApply apply) {
-        String start = apply.getStart_time();
-        String end = apply.getEnd_time();
+    public static int getDutyDays(String strStartDate, String strEndDate) {
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+        Date startDate = null;
+        Date endDate = null;
+        try {
+            startDate = df.parse(strStartDate);
+            endDate = df.parse(strEndDate);
+        } catch (ParseException e) {
+            System.out.println("非法的日期格式,无法进行转换");
+            e.printStackTrace();
+        }
+        int result = 0;
+        while (startDate.compareTo(endDate) <= 0) {
+            if (startDate.getDay() != 6 && startDate.getDay() != 0)
+                result++;
+            startDate.setDate(startDate.getDate() + 1);
+        }
+
+        return result;
+    }
+
+
+    /**
+     * 获取两个日期之间的天数
+     */
+    public static Integer getDays(String start, String end) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         try {
             Date before = dateFormat.parse(start);

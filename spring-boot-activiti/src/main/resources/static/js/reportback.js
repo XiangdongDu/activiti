@@ -1,7 +1,7 @@
     $(document).ready(function(){
     $('#realstart_time').datepicker({setDate: new Date(), dateFormat: 'yy-mm-dd'});
 	$('#realend_time').datepicker({setDate: new Date(), dateFormat: 'yy-mm-dd'});
-    
+
     	$("#dept").hide();
 	    var grid=$("#grid-data").bootgrid({
 	    	navigation:2,

@@ -196,12 +196,16 @@ public class ActivitiController {
     @RequestMapping(value = "/startleave", method = RequestMethod.POST)
     @ResponseBody
     public MSG start_leave(LeaveApply apply, HttpSession session) {
+        int days = DateUtils.getDutyDays(apply.getStart_time(), apply.getEnd_time());
+        if (days == 0) {
+            return new MSG("fail");
+        }
         String userid = (String) session.getAttribute("username");
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("applyuserid", userid);
         variables.put("deptleader", apply.getDeptleader());
         leaveservice.startWorkflow(apply, userid, variables);
-        return new MSG("sucess");
+        return new MSG("success");
     }
 
     /**
@@ -337,7 +341,7 @@ public class ActivitiController {
                 .singleResult();
         LeaveApply leave = leaveservice.getleave(new Integer(process.getBusinessKey()));
         //获取请假天数
-        int days = DateUtils.getDays(leave);
+        int days = DateUtils.getDutyDays(leave.getStart_time(), leave.getEnd_time());
         leave.setDays(days);
         return leave;
     }
