@@ -12,4 +12,7 @@ public interface LeaveApplyMapper {
 	int updateByPrimaryKey(LeaveApply record);
 	
 	List<LeaveApply> listLeaveApplyByApplyer(String applyer);
+
+	List<LeaveApply> getAllLeave();
+
 }

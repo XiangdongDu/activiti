@@ -37,6 +37,8 @@ public class LeaveTask {
 	String processdefid;
 	@ApiModelProperty("任务创建时间")
 	Date taskcreatetime;
+	@ApiModelProperty("请假天数")
+	Integer leave_day;
 	public int getId() {
 		return id;
 	}
@@ -127,6 +129,12 @@ public class LeaveTask {
 	public void setTaskcreatetime(Date taskcreatetime) {
 		this.taskcreatetime = taskcreatetime;
 	}
-	
-	
+
+	public Integer getLeave_day() {
+		return leave_day;
+	}
+
+	public void setLeave_day(Integer leave_day) {
+		this.leave_day = leave_day;
+	}
 }

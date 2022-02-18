@@ -23,6 +23,8 @@ public interface LeaveService {
 
     List<LeaveApply> getpagedepttask(String userid, int firstrow, int rowcount);
 
+    List<LeaveApply> employeeAttendanceList( int current, int rowCount);
+
     int getalldepttask(String userid);
 
     LeaveApply getleave(int id);

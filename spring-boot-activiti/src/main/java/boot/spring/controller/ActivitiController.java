@@ -182,6 +182,61 @@ public class ActivitiController {
         return "activiti/leaveapply";
     }
 
+    @RequestMapping(value = "/employeeattendance", method = RequestMethod.GET)
+    public String employeeattendance() {
+        return "activiti/employeeattendance";
+    }
+
+    @ApiOperation("获取员工考勤列表")
+    @RequestMapping(value = "/employeeAttendanceList", method = RequestMethod.POST)
+    @ResponseBody
+    public DataGrid<LeaveTask> employeeAttendanceList(HttpSession session, @RequestParam("current") int current,
+                                                      @RequestParam("rowCount") int rowCount) {
+        DataGrid<LeaveTask> grid = new DataGrid<>();
+        grid.setRowCount(rowCount);
+        grid.setCurrent(current);
+        List<LeaveApply> result = leaveservice.employeeAttendanceList(current, rowCount);
+        List<LeaveApply> results = new ArrayList<>();
+        int firstRow = (current - 1) * rowCount;
+        int lastRow = current * rowCount - 1;
+        for (int i = 0; i < result.size(); i++) {
+            if (firstRow <= i && i <= lastRow) {
+                LeaveApply leaveApply = result.get(i);
+                results.add(leaveApply);
+            }
+        }
+        List<LeaveTask> tasks = getLeaveDetail(results);
+        grid.setTotal(result.size());
+        grid.setRows(tasks);
+        return grid;
+    }
+
+    /**
+     * 获取员工考勤展示信息
+     *
+     * @param results
+     * @return
+     */
+    private List<LeaveTask> getLeaveDetail(List<LeaveApply> results) {
+        List<LeaveTask> tasks = new ArrayList<>();
+        for (LeaveApply apply : results) {
+            LeaveTask task = new LeaveTask();
+            task.setApply_time(apply.getApply_time());
+            task.setUser_id(apply.getUser_id());
+            task.setEnd_time(apply.getEnd_time());
+            task.setId(apply.getId());
+            task.setLeave_type(apply.getLeave_type());
+            task.setProcess_instance_id(apply.getProcess_instance_id());
+            task.setReason(apply.getReason());
+            task.setStart_time(apply.getStart_time());
+            task.setReality_start_time(apply.getReality_start_time());
+            task.setReality_end_time(apply.getReality_end_time());
+            task.setLeave_day(apply.getLeave_day());
+            tasks.add(task);
+        }
+        return tasks;
+    }
+
     @RequestMapping(value = "/reportback", method = RequestMethod.GET)
     public String reprotback() {
         return "activiti/reportback";
@@ -200,6 +255,7 @@ public class ActivitiController {
         if (days == 0) {
             return new MSG("fail");
         }
+        apply.setLeave_day(days);
         String userid = (String) session.getAttribute("username");
         Map<String, Object> variables = new HashMap<String, Object>();
         variables.put("applyuserid", userid);
@@ -234,7 +290,6 @@ public class ActivitiController {
         }
         return tasks;
     }
-
 
     @ApiOperation("获取部门领导审批待办列表")
     @RequestMapping(value = "/depttasklist", method = RequestMethod.POST)

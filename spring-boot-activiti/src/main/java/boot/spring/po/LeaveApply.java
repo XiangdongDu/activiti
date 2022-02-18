@@ -41,6 +41,9 @@ public class LeaveApply implements Serializable{
 	
 	@ApiModelProperty("部门经理")
 	String deptleader;
+
+	@ApiModelProperty("请假天数")
+	Integer leave_day;
 	
 	Task task;
 	
@@ -153,5 +156,12 @@ public class LeaveApply implements Serializable{
 	public void setState(String state) {
 		this.state = state;
 	}
-	
+
+	public Integer getLeave_day() {
+		return leave_day;
+	}
+
+	public void setLeave_day(Integer leave_day) {
+		this.leave_day = leave_day;
+	}
 }

@@ -91,14 +91,14 @@
                             <label>请假原因</label>
                             <input class="form-control" id="reason" readonly="readonly"/>
                         </div>
-                        <div class="form-group">
-                            <label>实际开始时间</label>
-                            <input class="form-control" id="realstart_time" name="realstart_time"/>
-                        </div>
-                        <div class="form-group">
-                            <label>实际结束时间</label>
-                            <input class="form-control" id="realend_time" name="realend_time"/>
-                        </div>
+                        <!--<div class="form-group">-->
+                            <!--<label>实际开始时间</label>-->
+                            <!--<input class="form-control" id="realstart_time" name="realstart_time"/>-->
+                        <!--</div>-->
+                        <!--<div class="form-group">-->
+                            <!--<label>实际结束时间</label>-->
+                            <!--<input class="form-control" id="realend_time" name="realend_time"/>-->
+                        <!--</div>-->
                         <button id="btn" type="button" class="btn btn-default">完成</button>
                     </form>
                 </div>
@@ -112,36 +112,36 @@
     $(document).ready(function () {
         $("#btn").click(function () {
 
-            var startime = document.getElementById("startime").value;
-            var endtime = document.getElementById("endtime").value;
-            var realstart_time = document.getElementById("realstart_time").value;
-            var realend_time = document.getElementById("realend_time").value;
-            if (realstart_time != "" || realend_time != "") {
-                if (realstart_time == "" || realend_time == "") {
-                    alert("实际开始时间和实际结束时间必须同时填写或都不填写！");
-                    return false;
-                }
-                var start = new Date(startime);
-                var realstart = new Date(realstart_time);
-                var end = new Date(endtime);
-                var realend = new Date(realend_time);
-                if (start.getTime() > realstart.getTime()) {
-                    alert("实际开始时间不能小于申请开始时间！");
-                    return false;
-                } else if (realstart.getTime() > end.getTime()) {
-                    alert("实际开始时间不能大于申请结束时间！");
-                    return false;
-                } else if (realend.getTime() < start.getTime()) {
-                    alert("实际结束时间不能小于申请开始时间！");
-                    return false;
-                } else if (realend.getTime() > end.getTime()) {
-                    alert("实际结束时间不能大于申请结束时间！");
-                    return false;
-                } else if (realend.getTime() < realstart.getTime()) {
-                    alert("实际结束时间不能小于实际开始时间！");
-                    return false;
-                }
-            }
+//            var startime = document.getElementById("startime").value;
+//            var endtime = document.getElementById("endtime").value;
+//            var realstart_time = document.getElementById("realstart_time").value;
+//            var realend_time = document.getElementById("realend_time").value;
+//            if (realstart_time != "" || realend_time != "") {
+//                if (realstart_time == "" || realend_time == "") {
+//                    alert("实际开始时间和实际结束时间必须同时填写或都不填写！");
+//                    return false;
+//                }
+//                var start = new Date(startime);
+//                var realstart = new Date(realstart_time);
+//                var end = new Date(endtime);
+//                var realend = new Date(realend_time);
+//                if (start.getTime() > realstart.getTime()) {
+//                    alert("实际开始时间不能小于申请开始时间！");
+//                    return false;
+//                } else if (realstart.getTime() > end.getTime()) {
+//                    alert("实际开始时间不能大于申请结束时间！");
+//                    return false;
+//                } else if (realend.getTime() < start.getTime()) {
+//                    alert("实际结束时间不能小于申请开始时间！");
+//                    return false;
+//                } else if (realend.getTime() > end.getTime()) {
+//                    alert("实际结束时间不能大于申请结束时间！");
+//                    return false;
+//                } else if (realend.getTime() < realstart.getTime()) {
+//                    alert("实际结束时间不能小于实际开始时间！");
+//                    return false;
+//                }
+//            }
 
             $.post("task/reportcomplete/" + $("form").data("taskid"), $("form").serialize(), function (a) {
                 alert("处理成功");

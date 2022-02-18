@@ -27,6 +27,7 @@ CREATE TABLE `leaveapply`  (
   `user_id` varchar(20) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `start_time` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `end_time` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `leave_day` int(11) DEFAULT NULL COMMENT '请假天数',
   `leave_type` varchar(45) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `reason` varchar(400) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `apply_time` datetime(0) NULL DEFAULT NULL,

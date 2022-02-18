@@ -15,17 +15,17 @@ import boot.spring.util.mail.MailHelper;
 import boot.spring.util.mail.MapHolder;
 import com.github.pagehelper.PageHelper;
 import groovy.util.logging.Slf4j;
+import org.activiti.engine.HistoryService;
 import org.activiti.engine.IdentityService;
 import org.activiti.engine.RuntimeService;
 import org.activiti.engine.TaskService;
 import org.activiti.engine.history.HistoricActivityInstance;
+import org.activiti.engine.impl.persistence.entity.HistoricDetailVariableInstanceUpdateEntity;
 import org.activiti.engine.impl.persistence.entity.ProcessDefinitionEntity;
 import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
-import org.beetl.ext.simulate.JsonUtil;
-import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,20 +34,21 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static boot.spring.util.Constants.ERRORCODE_MAILEERROR;
-
 @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.DEFAULT, timeout = 5000)
 @Service
 @Slf4j
 public class LeaveServiceImpl implements LeaveService {
     private static final Logger logger = LoggerFactory.getLogger(LeaveServiceImpl.class);
+
+
+    @Autowired
+    HistoryService histiryservice;
 
     @Autowired
     LeaveApplyMapper leavemapper;
@@ -67,6 +68,8 @@ public class LeaveServiceImpl implements LeaveService {
     @Autowired
     BeetHelper beetHelper;
 
+    @Autowired
+    RuntimeService runservice;
 
     @Autowired
     ParamItemMapper paramItemMapper;
@@ -278,6 +281,27 @@ public class LeaveServiceImpl implements LeaveService {
         List<Task> tasks = taskservice.createTaskQuery().taskAssignee(username).taskName("部门领导审批").list();
         return tasks.size();
     }
+
+    /**
+     * 获取员工考勤列表
+     */
+    public List<LeaveApply> employeeAttendanceList(int current, int rowCount) {
+        List<LeaveApply> result = new LinkedList<>();
+        try {
+            List<LeaveApply> list = leavemapper.getAllLeave();
+            for (LeaveApply apply : list) {
+                HistoricDetailVariableInstanceUpdateEntity his = (HistoricDetailVariableInstanceUpdateEntity) histiryservice.createHistoricDetailQuery()
+                        .processInstanceId(apply.getProcess_instance_id()).orderByTime().desc().list().get(0);
+                String isLeave = his.getTextValue();
+                if (!isLeave.equals("false"))//排除取消休假
+                    result.add(apply);
+            }
+        } catch (Exception e) {
+            logger.error("获取员工考勤列表异常...{}", e);
+        }
+        return result;
+    }
+
 
     public LeaveApply getleave(int id) {
         LeaveApply leave = leavemapper.getLeaveApply(id);
