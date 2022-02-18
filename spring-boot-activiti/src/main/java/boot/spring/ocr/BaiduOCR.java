@@ -16,7 +16,7 @@ import java.util.List;
  * @Date 2022/1/20 12:40
  * @Version 1.0
  * @desc 百度智能云 图像文字识别通用文字识别接口
- *  注意：access_token的有效期为30天，需要每30天进行定期更换；目前每月200次免费调用额度（注意使用次数）
+ * 注意：access_token的有效期为30天，需要每30天进行定期更换；目前每月200次免费调用额度（注意使用次数）
  * 我的百度智能云地址 https://console.bce.baidu.com/ai/?_=1642668578548#/ai/ocr/overview/index
  * 参考文档
  * https://cloud.baidu.com/doc/OCR/s/Ikibizxql
@@ -27,19 +27,19 @@ public class BaiduOCR {
     private static final Logger logger = LoggerFactory.getLogger(BaiduOCR.class);
 
     //设置APPID/AK/SK
-    public static final String APP_ID = "25533740";
-    public static final String API_KEY = "RomrkXIewMvOipc49zthQ2pj";
-    public static final String SECRET_KEY = "izHpeTn0b0U1YMv6Gm38TkTE0LUqqmHt";
+    public static final String APP_ID = "25630504";
+    public static final String API_KEY = "gCTEb7QMpgQzGvCx2NiHZ0qx";
+    public static final String SECRET_KEY = "tszYWgwMODrRuyANle6Cvx4mwLMmUVZW";
 
     public static void main(String[] args) {
-        String path = "/Users/duxiangdong/F/work/lunwen/activiti/spring-boot-activiti/src/main/webapp/uploadfiles/jkm.png";
-//        String path = "/Users/duxiangdong/F/work/lunwen/activiti/spring-boot-activiti/src/main/webapp/uploadfiles/jkm1.jpeg";
-
+//        String path = "/Users/duxiangdong/F/work/lunwen/activiti/spring-boot-activiti/src/main/webapp/uploadfiles/jkm.png";
+//        String path = "https://pics2.baidu.com/feed/0823dd54564e9258010276610022a251cdbf4eb1.jpeg?token=c1cf681fea5ff0f7d2fb8fc737fd3691";
+        String path = "/Users/duxiangdong/F/work/lunwen/activiti/spring-boot-activiti/src/main/webapp/uploadfiles/jon/dxdjkm.png";
         // 高精度版本-调用接口  参数为本地图片路径请求格式支持：PNG、JPG、JPEG、BMP、TIFF、PNM、WebP
-//        JSONObject accurateBasic = accurateBasic(path);
+        JSONObject accurateBasic = accurateBasic(path);
         //校验健康码是否正常
 //        String result = checkJKM(accurateBasic);
-        String result="正常";
+        String result = "正常";
         System.out.println("健康码检验结果=========>" + result);
 
     }
@@ -76,28 +76,34 @@ public class BaiduOCR {
      * @return
      */
     public static String checkJKM(JSONObject res) {
-        int num = (int) res.get("words_result_num");
-        if (num > 0) {
-            JSONArray array = (JSONArray) res.get("words_result");
-            for (int i = 0; i < array.length(); i++) {
-                JSONObject jsonobject = array.getJSONObject(i);
-                String word = (String) jsonobject.get("words");
-                if (word != null && word.length() == 18 && !word.contains("*")) {
-                    logger.info("today===>{}", word.substring(0, 10));
-                    //检验日期是否今天的健康码截图
-                    List<String> todayType = DateUtils.getTodayDate();
-                    Boolean flg = false;
-                    for (String str : todayType) {
-                        if (str.equals(word.substring(0, 10)))
-                            flg = true;
+        try {
+            int num = (int) res.get("words_result_num");
+            if (num > 0) {
+                JSONArray array = (JSONArray) res.get("words_result");
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject jsonobject = array.getJSONObject(i);
+                    String word = (String) jsonobject.get("words");
+                    if (word != null && word.length() == 18 && !word.contains("*")) {
+                        logger.info("today===>{}", word.substring(0, 10));
+                        //检验日期是否今天的健康码截图
+                        List<String> todayType = DateUtils.getTodayDate();
+                        Boolean flg = false;
+                        for (String str : todayType) {
+                            if (str.equals(word.substring(0, 10)))
+                                flg = true;
+                        }
+                        if (flg == false)
+                            return "健康码截图日期失效，请重新上传今天健康码截图！";
                     }
-                    if (flg == false)
-                        return "健康码截图日期失效，请重新上传今天健康码截图！";
-                }
-                if (word != null && (word.contains("绿色") || word.contains("未见异常"))) {
-                    return "正常";
+                    if (word != null && (word.contains("绿色") || word.contains("未见异常"))) {
+                        return "正常";
+                    }
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error("解析OCR并校验健康码内容出现异常...{}", e);
+            return "解析OCR并校验健康码内容出现异常";
         }
         return "异常";
     }

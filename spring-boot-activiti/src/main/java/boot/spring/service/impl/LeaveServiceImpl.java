@@ -26,6 +26,7 @@ import org.activiti.engine.impl.pvm.PvmTransition;
 import org.activiti.engine.impl.pvm.process.ActivityImpl;
 import org.activiti.engine.runtime.ProcessInstance;
 import org.activiti.engine.task.Task;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -97,21 +99,20 @@ public class LeaveServiceImpl implements LeaveService {
                 //获取当前项目的相对路径的根目录
                 String rootPath = System.getProperty("user.dir");
                 // 文件上传后的路径
-                String filePath = rootPath + "/src/main/webapp/uploadfiles/" + username + "/";
+                String filePath = rootPath + "/src/main/webapp/uploadfiles/" + username + "/4/" + fileName;
                 logger.info("上传的文件名路径===>{}", filePath);
-
-                File dest = new File(filePath + fileName);
+                File dest = new File(filePath);
                 // 检测是否存在目录
                 if (!dest.getParentFile().exists()) {
                     dest.getParentFile().mkdirs();
                 }
-                // 高精度版本-调用接口  参数为本地图片路径请求格式支持：PNG、JPG、JPEG、BMP、TIFF、PNM、WebP
-//            JSONObject accurateBasic = BaiduOCR.accurateBasic(filePath);
-                //校验健康码是否正常
-//            String result = BaiduOCR.checkJKM(accurateBasic);
-                String result = "异常";
-                logger.info("健康码检验结果=========>{}", result);
                 file.transferTo(dest);
+                // 高精度版本-调用接口  参数为本地图片路径请求格式支持：PNG、JPG、JPEG、BMP、TIFF、PNM、WebP
+                JSONObject accurateBasic = BaiduOCR.accurateBasic(filePath);
+                //校验健康码是否正常
+                String result = BaiduOCR.checkJKM(accurateBasic);
+//                String result = "异常";
+                logger.info("健康码检验结果=========>{}", result);
                 if (result.equals("正常")) {
                     return new MSG("上传文件成功！");
                 } else if (result.equals("异常")) {
@@ -125,10 +126,11 @@ public class LeaveServiceImpl implements LeaveService {
             }
         } catch (IllegalStateException e) {
             e.printStackTrace();
+            logger.error("上传文件失败{}", e);
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error("上传文件失败,{}", e);
         }
-        logger.error("上传文件失败");
         return new MSG("上传文件失败！");
     }
 

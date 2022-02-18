@@ -50,9 +50,9 @@ public class CheckOCR {
         postMethod.setRequestHeader("Content-Type", "application/x-www-form-urlencoded;charset=utf-8");
         //参数设置，需要注意的就是里边不能传NULL，要传空字符串
         NameValuePair[] data = {
+                new NameValuePair("url","https://pics2.baidu.com/feed/0823dd54564e9258010276610022a251cdbf4eb1.jpeg?token=c1cf681fea5ff0f7d2fb8fc737fd3691"),
 //                new NameValuePair("url", "https://jkm-1309339742.cos.ap-shanghai.myqcloud.com/dxdjkm.png"),
-                new NameValuePair("url", "/Users/duxiangdong/F/work/lunwen/activiti/spring-boot-activiti/1.jpg"),
-
+//                new NameValuePair("url", "/Users/duxiangdong/F/work/lunwen/activiti/spring-boot-activiti/1.jpg"),
                 new NameValuePair("detect_direction", "false"),
                 new NameValuePair("paragraph", "false"),
                 new NameValuePair("probability", "false")

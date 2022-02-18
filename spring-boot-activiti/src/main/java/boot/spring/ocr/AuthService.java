@@ -11,6 +11,7 @@ import java.util.Map;
 
 /**
  * 本类暂不使用仅供参考
+ *
  * @author dxd
  * @description 获取权限token
  * 我的官网地址
@@ -24,9 +25,9 @@ public class AuthService {
     public static String getAuth() {
         //dxd 2022-1-19
         // 百度智能云官网获取的 API Key 更新为你注册的
-        String clientId = "RomrkXIewMvOipc49zthQ2pj";
+        String clientId = "gCTEb7QMpgQzGvCx2NiHZ0qx";//"RomrkXIewMvOipc49zthQ2pj";
         // 百度智能云官网获取的 Secret Key 更新为你注册的
-        String clientSecret = "izHpeTn0b0U1YMv6Gm38TkTE0LUqqmHt";
+        String clientSecret = "tszYWgwMODrRuyANle6Cvx4mwLMmUVZW";//"izHpeTn0b0U1YMv6Gm38TkTE0LUqqmHt";
         String address = getAuth(clientId, clientSecret);
         return address;
     }
