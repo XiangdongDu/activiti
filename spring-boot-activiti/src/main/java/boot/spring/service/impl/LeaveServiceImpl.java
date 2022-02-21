@@ -92,6 +92,7 @@ public class LeaveServiceImpl implements LeaveService {
             boolean flag = false;
             if (suffixName.toLowerCase().endsWith(".jpg")
                     || suffixName.toLowerCase().endsWith(".png")
+                    || suffixName.toLowerCase().endsWith(".bmp")
                     || suffixName.toLowerCase().endsWith(".jpeg")) {
                 flag = true;
             }
@@ -107,7 +108,7 @@ public class LeaveServiceImpl implements LeaveService {
                     dest.getParentFile().mkdirs();
                 }
                 file.transferTo(dest);
-                // 高精度版本-调用接口  参数为本地图片路径请求格式支持：PNG、JPG、JPEG、BMP、TIFF、PNM、WebP
+                // 高精度版本-调用接口  参数为本地图片路径请求格式支持：PNG、JPG、JPEG、BMP
                 JSONObject accurateBasic = BaiduOCR.accurateBasic(filePath);
                 //校验健康码是否正常
                 String result = BaiduOCR.checkJKM(accurateBasic);
@@ -122,7 +123,7 @@ public class LeaveServiceImpl implements LeaveService {
                     return new MSG(result);
                 }
             } else {
-                return new MSG("图片格式不符合！请重新上传！");
+                return new MSG("图片格式不符合！（支持PNG、JPG、JPEG、BMP）请重新上传！");
             }
         } catch (IllegalStateException e) {
             e.printStackTrace();
