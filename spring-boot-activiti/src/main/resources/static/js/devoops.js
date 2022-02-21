@@ -3356,7 +3356,8 @@ $(document).ready(function () {
 	});
 	var ajax_url = location.hash.replace(/^#/, '');
 	if (ajax_url.length < 1) {
-		ajax_url = 'processlist';
+		// ajax_url = 'processlist';
+		ajax_url = 'jkmlist';//默认首页健康码截图上传
 	}
 	LoadAjaxContent(ajax_url);
 	var item = $('.main-menu li a[href$="' + ajax_url + '"]');

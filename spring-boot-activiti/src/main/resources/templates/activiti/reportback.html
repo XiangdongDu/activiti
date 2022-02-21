@@ -92,14 +92,17 @@
                             <input class="form-control" id="reason" readonly="readonly"/>
                         </div>
                         <!--<div class="form-group">-->
-                            <!--<label>实际开始时间</label>-->
-                            <!--<input class="form-control" id="realstart_time" name="realstart_time"/>-->
+                        <!--<label>实际开始时间</label>-->
+                        <!--<input class="form-control" id="realstart_time" name="realstart_time"/>-->
                         <!--</div>-->
                         <!--<div class="form-group">-->
-                            <!--<label>实际结束时间</label>-->
-                            <!--<input class="form-control" id="realend_time" name="realend_time"/>-->
+                        <!--<label>实际结束时间</label>-->
+                        <!--<input class="form-control" id="realend_time" name="realend_time"/>-->
                         <!--</div>-->
+
                         <button id="btn" type="button" class="btn btn-default">完成</button>
+                        <label style="color: red">⚠️点击销假完成之前需要上传今日健康码截图 </label>
+
                     </form>
                 </div>
             </div>
@@ -144,8 +147,14 @@
 //            }
 
             $.post("task/reportcomplete/" + $("form").data("taskid"), $("form").serialize(), function (a) {
-                alert("处理成功");
-                LoadAjaxContent("reportback");
+                var flg = a.state;
+                if (flg == 'success') {
+                    alert("处理成功");
+                    LoadAjaxContent("reportback");
+                } else {
+                    alert(flg);
+                }
+
             });
 
         });

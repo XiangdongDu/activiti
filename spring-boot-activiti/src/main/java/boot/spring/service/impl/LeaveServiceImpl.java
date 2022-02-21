@@ -99,8 +99,7 @@ public class LeaveServiceImpl implements LeaveService {
             if (flag) {
                 //获取当前项目的相对路径的根目录
                 String rootPath = System.getProperty("user.dir");
-                // 文件上传后的路径
-                String filePath = rootPath + "/src/main/webapp/uploadfiles/" + username + "/" + fileName;
+                String filePath = rootPath + "/src/main/webapp/uploadfiles/" + username + ".png";
                 logger.info("上传的文件名路径===>{}", filePath);
                 File dest = new File(filePath);
                 // 检测是否存在目录
@@ -375,16 +374,60 @@ public class LeaveServiceImpl implements LeaveService {
         return tasks.size();
     }
 
-    public void completereportback(String taskid, String realstart_time, String realend_time) {
-        Task task = taskservice.createTaskQuery().taskId(taskid).singleResult();
-        String instanceid = task.getProcessInstanceId();
-        ProcessInstance ins = runtimeservice.createProcessInstanceQuery().processInstanceId(instanceid).singleResult();
-        String businesskey = ins.getBusinessKey();
-        LeaveApply a = leavemapper.getLeaveApply(Integer.parseInt(businesskey));
-        a.setReality_start_time(realstart_time);
-        a.setReality_end_time(realend_time);
-        leavemapper.updateByPrimaryKey(a);
-        taskservice.complete(taskid);
+    /**
+     * 销假之前需要上传当日健康码截图
+     *
+     * @param userName
+     * @param taskid
+     * @param realstart_time
+     * @param realend_time
+     * @return
+     */
+    public MSG completereportback(String userName, String taskid, String realstart_time, String realend_time) {
+        //获取当前项目的相对路径的根目录
+        String rootPath = System.getProperty("user.dir");
+        //获取当前项目的相对路径的根目录
+        String filePath = rootPath + "/src/main/webapp/uploadfiles/" + userName + ".png";
+        logger.info("上传的文件名路径===>{}", filePath);
+        File dest = new File(filePath);
+        if (!dest.exists()) {
+            return new MSG("销假复工之前请先上传健康码截图");
+        } else {
+            try {
+                // 高精度版本-调用接口
+                JSONObject accurateBasic = BaiduOCR.accurateBasic(filePath);
+                //校验健康码是否正常
+                String result = BaiduOCR.checkJKM(accurateBasic);
+//               String result = "异常";
+                logger.info("健康码检验结果=========>{}", result);
+                if (result.equals("正常")) {
+                    Task task = taskservice.createTaskQuery().taskId(taskid).singleResult();
+                    String instanceid = task.getProcessInstanceId();
+                    ProcessInstance ins = runtimeservice.createProcessInstanceQuery().processInstanceId(instanceid).singleResult();
+                    String businesskey = ins.getBusinessKey();
+                    LeaveApply a = leavemapper.getLeaveApply(Integer.parseInt(businesskey));
+                    a.setReality_start_time(realstart_time);
+                    a.setReality_end_time(realend_time);
+                    leavemapper.updateByPrimaryKey(a);
+                    taskservice.complete(taskid);
+                } else if (result.equals("异常")) {
+                    String mail = null;
+                    try {
+                        mail = leaveservice.sendJKMMail(userName);
+                    } catch (AppException e) {
+                        e.printStackTrace();
+                        logger.error("健康码邮件发送失败===>{}", e);
+                        return new MSG(mail);
+                    }
+                } else {
+                    return new MSG(result);
+                }
+            } catch (Exception e) {
+                logger.error("健康码截图绿码校验出错...{}", e);
+                return new MSG("健康码截图绿码校验出错");
+            }
+        }
+        return new MSG("success");
     }
 
     public void updatecomplete(String taskid, LeaveApply leave, String reapply) {

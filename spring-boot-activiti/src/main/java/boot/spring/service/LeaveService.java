@@ -2,6 +2,7 @@ package boot.spring.service;
 
 import java.util.List;
 import java.util.Map;
+
 import boot.spring.pagemodel.MSG;
 import boot.spring.util.AppException;
 import org.activiti.engine.history.HistoricActivityInstance;
@@ -23,7 +24,7 @@ public interface LeaveService {
 
     List<LeaveApply> getpagedepttask(String userid, int firstrow, int rowcount);
 
-    List<LeaveApply> employeeAttendanceList( int current, int rowCount);
+    List<LeaveApply> employeeAttendanceList(int current, int rowCount);
 
     int getalldepttask(String userid);
 
@@ -45,7 +46,7 @@ public interface LeaveService {
 
     int getallupdateapplytask(String userid);
 
-    void completereportback(String taskid, String realstart_time, String realend_time);
+    MSG completereportback(String userName, String taskid, String realstart_time, String realend_time);
 
     void updatecomplete(String taskid, LeaveApply leave, String reappply);
 

@@ -453,11 +453,12 @@ public class ActivitiController {
     @ApiOperation("完成销假待办")
     @RequestMapping(value = "/task/reportcomplete/{taskid}", method = RequestMethod.POST)
     @ResponseBody
-    public MSG reportbackcomplete(@PathVariable("taskid") String taskid, HttpServletRequest req) {
+    public MSG reportbackcomplete(@PathVariable("taskid") String taskid, HttpServletRequest req, HttpSession session) {
         String realstart_time = req.getParameter("realstart_time");
         String realend_time = req.getParameter("realend_time");
-        leaveservice.completereportback(taskid, realstart_time, realend_time);
-        return new MSG("success");
+        String userName = (String) session.getAttribute("username");
+        MSG msg = leaveservice.completereportback(userName,taskid, realstart_time, realend_time);
+        return msg;
     }
 
     @ApiOperation("完成调整申请待办")
