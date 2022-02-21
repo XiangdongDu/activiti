@@ -99,7 +99,7 @@ public class LeaveServiceImpl implements LeaveService {
                 //获取当前项目的相对路径的根目录
                 String rootPath = System.getProperty("user.dir");
                 // 文件上传后的路径
-                String filePath = rootPath + "/src/main/webapp/uploadfiles/" + username + "/4/" + fileName;
+                String filePath = rootPath + "/src/main/webapp/uploadfiles/" + username + "/" + fileName;
                 logger.info("上传的文件名路径===>{}", filePath);
                 File dest = new File(filePath);
                 // 检测是否存在目录
