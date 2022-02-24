@@ -27,9 +27,9 @@ public class BaiduOCR {
     private static final Logger logger = LoggerFactory.getLogger(BaiduOCR.class);
 
     //设置APPID/AK/SK
-    public static final String APP_ID = "25630504";
-    public static final String API_KEY = "gCTEb7QMpgQzGvCx2NiHZ0qx";
-    public static final String SECRET_KEY = "tszYWgwMODrRuyANle6Cvx4mwLMmUVZW";
+    public static final String APP_ID = "25654514";
+    public static final String API_KEY = "bQF79wXwhRn7mdW9dtTIeqdN";
+    public static final String SECRET_KEY = "RRNhSFHqCjtFhqyT9fzGAc4sqDO4CeO1";
 
     public static void main(String[] args) {
 //        String path = "/Users/duxiangdong/F/work/lunwen/activiti/spring-boot-activiti/src/main/webapp/uploadfiles/jkm.png";
