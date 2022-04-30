@@ -2,7 +2,6 @@ package boot.spring.po;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
-
 @ApiModel("参数配置表")
 public class MailInfo implements Serializable {
 	@ApiModelProperty("主键")
