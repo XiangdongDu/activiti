@@ -99,7 +99,9 @@ public class LeaveServiceImpl implements LeaveService {
             if (flag) {
                 //获取当前项目的相对路径的根目录
                 String rootPath = System.getProperty("user.dir");
-                String filePath = rootPath + "/src/main/webapp/uploadfiles/" + username + ".png";
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+                String date = sdf.format(new Date());
+                String filePath = rootPath + "/src/main/webapp/uploadfiles/" + date + "/" + username + ".png";
                 logger.info("上传的文件名路径===>{}", filePath);
                 File dest = new File(filePath);
                 // 检测是否存在目录
@@ -150,7 +152,7 @@ public class LeaveServiceImpl implements LeaveService {
             Map<String, Object> map = MapHolder.create().put("name", username).get();
             mailHelper.syncSendMailAddFile(toAdder, cc, "健康码警报-【" + username + "】健康码异常", beetHelper.getContent("/templates/mail/checkJKM.txt", map), null, null);
             logger.info("健康码邮件发送成功!");
-            return "健康码邮件发送成功!";
+            return "健康码颜色异常，开始进行邮件发送通知!";
         } catch (Exception e) {
             logger.error("健康码邮件发送失败!{}", e);
             e.printStackTrace();
@@ -387,7 +389,9 @@ public class LeaveServiceImpl implements LeaveService {
         //获取当前项目的相对路径的根目录
         String rootPath = System.getProperty("user.dir");
         //获取当前项目的相对路径的根目录
-        String filePath = rootPath + "/src/main/webapp/uploadfiles/" + userName + ".png";
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        String date = sdf.format(new Date());
+        String filePath = rootPath + "/src/main/webapp/uploadfiles/" + date + "/" + userName + ".png";
         logger.info("上传的文件名路径===>{}", filePath);
         File dest = new File(filePath);
         if (!dest.exists()) {
