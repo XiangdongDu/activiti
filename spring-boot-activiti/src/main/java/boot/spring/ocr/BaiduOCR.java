@@ -29,12 +29,12 @@ public class BaiduOCR {
     //设置APPID/AK/SK
     public static final String APP_ID = "25654514";
     public static final String API_KEY = "bQF79wXwhRn7mdW9dtTIeqdN";
-    public static final String SECRET_KEY = "RRNhSFHqCjtFhqyT9fzGAc4sqDO4CeO1";
+    public static final String SECRET_KEY = "uj7wIfrOBfCizZ3Nt8Su1uwGbHto7L7t";
 
     public static void main(String[] args) {
 //        String path = "/Users/duxiangdong/F/work/lunwen/activiti/spring-boot-activiti/src/main/webapp/uploadfiles/jkm.png";
 //        String path = "https://pics2.baidu.com/feed/0823dd54564e9258010276610022a251cdbf4eb1.jpeg?token=c1cf681fea5ff0f7d2fb8fc737fd3691";
-        String path = "/Users/duxiangdong/F/work/lunwen/activiti/spring-boot-activiti/src/main/webapp/uploadfiles/jon/dxdjkm.png";
+        String path = "/Users/duxiangdong/F/work/lunwen/activiti/spring-boot-activiti/src/main/webapp/uploadfiles/dxdjkm.png";
         // 高精度版本-调用接口  参数为本地图片路径请求格式支持：PNG、JPG、JPEG、BMP、TIFF、PNM、WebP
         JSONObject accurateBasic = accurateBasic(path);
         //校验健康码是否正常
@@ -80,29 +80,33 @@ public class BaiduOCR {
             int num = (int) res.get("words_result_num");
             if (num > 0) {
                 JSONArray array = (JSONArray) res.get("words_result");
+                String result = "";
                 for (int i = 0; i < array.length(); i++) {
                     JSONObject jsonobject = array.getJSONObject(i);
                     String word = (String) jsonobject.get("words");
-                    if (word != null && word.length() == 18 && !word.contains("*")) {
-                        logger.info("today===>{}", word.substring(0, 10));
-                        //检验日期是否今天的健康码截图
-                        List<String> todayType = DateUtils.getTodayDate();
-                        Boolean flg = false;
-                        for (String str : todayType) {
-                            if (str.equals(word.substring(0, 10)))
-                                flg = true;
-                        }
-                        if (flg == false)
-                            return "健康码截图日期失效，请重新上传今天健康码截图！";
-                    }
-                    if (word != null && (word.contains("绿色") || word.contains("未见异常"))) {
-                        return "正常";
-                    }
+                    logger.info(word);
+                    result = result + word;
+//                    if (word != null && word.length() == 18 && !word.contains("*")) {
+//                        logger.info("today===>{}", word.substring(0, 10));
+//                        //检验日期是否今天的健康码截图
+//                        List<String> todayType = DateUtils.getTodayDate();
+//                        Boolean flg = false;
+//                        for (String str : todayType) {
+//                            if (str.equals(word.substring(0, 10)))
+//                                flg = true;
+//                        }
+//                        if (flg == false)
+//                            return "健康码截图日期失效，请重新上传今天健康码截图！";
+//                    }
+//                    if (word != null && (word.contains("绿色") || word.contains("未见异常"))) {
+//                        return "正常";
+//                    }
                 }
+                logger.info("图片内容：" + result);
             }
         } catch (Exception e) {
             e.printStackTrace();
-            logger.error("解析OCR并校验健康码内容出现异常...{}", e);
+            logger.error("解析OCR并校验健康码内容出现异常...{}", e.getMessage());
             return "解析OCR并校验健康码内容出现异常";
         }
         return "异常";

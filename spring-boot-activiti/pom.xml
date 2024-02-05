@@ -37,6 +37,14 @@
 
         <!--测试百度通用文字识别接口所需依赖-->
         <dependency>
+            <groupId>java-sdk-4.12.0</groupId>
+            <artifactId>java-sdk-4.12.0</artifactId>
+            <version>4.12.0</version>
+            <scope>system</scope>
+            <systemPath>${pom.basedir}/src/main/resources/lib/java-sdk-4.12.0.jar</systemPath>
+        </dependency>
+
+        <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>
             <version>3.1</version>
@@ -114,9 +122,9 @@
             <version>4.1.6</version>
         </dependency>
         <!--<dependency>-->
-            <!--<groupId>org.apache.poi</groupId>-->
-            <!--<artifactId>poi</artifactId>-->
-            <!--<version>3.14</version>-->
+        <!--<groupId>org.apache.poi</groupId>-->
+        <!--<artifactId>poi</artifactId>-->
+        <!--<version>3.14</version>-->
         <!--</dependency>-->
         <dependency>
             <groupId>io.springfox</groupId>
